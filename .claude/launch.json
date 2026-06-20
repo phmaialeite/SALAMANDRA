@@ -1,0 +1,23 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "chqao",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": ["server.py"],
+      "port": 8787
+    },
+    {
+      "name": "backend",
+      "runtimeExecutable": "bash",
+      "runtimeArgs": ["-lc", "cd backend && exec \"$HOME/.local/nodejs/bin/node\" --no-warnings src/server.js"],
+      "port": 8088
+    },
+    {
+      "name": "bussola",
+      "runtimeExecutable": "bash",
+      "runtimeArgs": ["-lc", "cd '/Users/PhilipeMaia/Desktop/CP_MOV/bussola' && exec node src/server.js"],
+      "port": 4000
+    }
+  ]
+}

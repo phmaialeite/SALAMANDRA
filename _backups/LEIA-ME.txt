@@ -1,0 +1,20 @@
+PASTA DE BACKUPS — SALAMANDRA
+=================================
+
+Esta pasta é o "correio" entre a máquina da sala e o Mac da Direção,
+funcionando pelo Google Drive (sem USB, sem transporte físico).
+
+COMO USAR (na máquina da sala, semanalmente ou quando pedirem):
+  1. Abrir o SALAMANDRA.
+  2. Entrar como Direção/Coordenação.
+  3. Ir em "Pessoas & Acessos" -> "Exportar backup".
+  4. Salvar o arquivo .json DENTRO desta pasta (_backups).
+
+O Google Drive sincroniza sozinho e o arquivo aparece no Mac da Direção.
+Lá, as observações dos colaboradores (aba "Reportar / Melhorias") podem ser
+lidas direto do arquivo, sem precisar importar nada.
+
+ATENÇÃO:
+  - NÃO apague os backups antigos sem conferir.
+  - O backup NÃO é o banco de dados; é uma cópia para leitura/transporte.
+  - O banco de dados de cada máquina fica LOCAL (fora do Drive), por segurança.

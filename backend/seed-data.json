@@ -1,0 +1,1249 @@
+{
+ "EQUIPE": [
+  {
+   "id": "u-001",
+   "postoGrad": "Cel BM",
+   "nome": "Philipe Rodrigues Maia Leite",
+   "re": "0553-1",
+   "perfis": [
+    "direcao"
+   ],
+   "cargo": "Diretor do Curso",
+   "obs": "Presidente da Comissão de Provas e Exames do PSI CHQAOBM VIII."
+  },
+  {
+   "id": "u-002",
+   "postoGrad": "Ten Cel BM",
+   "nome": "Sérgio Felipe Furukawa",
+   "re": "—",
+   "perfis": [
+    "direcao"
+   ],
+   "cargo": "Diretor Adjunto",
+   "obs": "Membro da Comissão de Provas e Exames do PSI CHQAOBM VIII.",
+   "senhaInicial": "0000"
+  },
+  {
+   "id": "u-003",
+   "postoGrad": "Maj BM",
+   "nome": "Marcio Bueno Leite",
+   "re": "0363-6",
+   "perfis": [
+    "coordenacao"
+   ],
+   "cargo": "Coordenador do Curso",
+   "obs": "Membro da Comissão de Provas e Exames do PSI CHQAOBM VIII."
+  },
+  {
+   "id": "u-004",
+   "postoGrad": "Maj BM",
+   "nome": "Pedro Daniel Simões Barbati",
+   "re": "—",
+   "perfis": [
+    "coordenacao"
+   ],
+   "cargo": "Coordenador Adjunto",
+   "obs": "Membro da Comissão de Provas e Exames do PSI CHQAOBM VIII.",
+   "senhaInicial": "0000"
+  },
+  {
+   "id": "u-005",
+   "postoGrad": "Cap BM",
+   "nome": "Graziele Azevedo da Silva",
+   "re": "1035-5",
+   "perfis": [
+    "coordenacao"
+   ],
+   "cargo": "Comandante de Pelotão",
+   "obs": ""
+  },
+  {
+   "id": "u-006",
+   "postoGrad": "SD BM",
+   "nome": "Jonatas Fernandes",
+   "re": "—",
+   "perfis": [
+    "auxiliar"
+   ],
+   "cargo": "Auxiliar do Curso",
+   "obs": ""
+  },
+  {
+   "id": "u-007",
+   "postoGrad": "SD BM",
+   "nome": "Diego Monteiro",
+   "re": "—",
+   "perfis": [
+    "auxiliar"
+   ],
+   "cargo": "Auxiliar do Curso",
+   "obs": ""
+  }
+ ],
+ "ALUNOS": [
+  {
+   "id": "a1",
+   "postoGrad": "Subten BM",
+   "nm": "Jeude de Oliveira Macedo",
+   "re": "0475-7",
+   "prec": 1
+  },
+  {
+   "id": "a2",
+   "postoGrad": "Subten BM",
+   "nm": "Wesley de Castro Nascimento",
+   "re": "0679-3",
+   "prec": 2
+  },
+  {
+   "id": "a3",
+   "postoGrad": "1º Sgt BM",
+   "nm": "Luiz Joaquim de Souza Junior",
+   "re": "0613-3",
+   "prec": 3
+  },
+  {
+   "id": "a4",
+   "postoGrad": "Subten BM",
+   "nm": "Nilmar Antunes de Souza",
+   "re": "0593-3",
+   "prec": 4
+  },
+  {
+   "id": "a5",
+   "postoGrad": "Subten BM",
+   "nm": "Valdir Rogério de Souza Venson",
+   "re": "0616-9",
+   "prec": 5
+  },
+  {
+   "id": "a6",
+   "postoGrad": "Subten BM",
+   "nm": "Mauro Rodrigues Costa Filho",
+   "re": "0537-3",
+   "prec": 6
+  },
+  {
+   "id": "a7",
+   "postoGrad": "1º Sgt BM",
+   "nm": "Francy Leila Vasconcelos da Silva",
+   "re": "0423-8",
+   "prec": 7
+  },
+  {
+   "id": "a8",
+   "postoGrad": "Subten BM",
+   "nm": "Antônio Edson Oliveira",
+   "re": "0726-6",
+   "prec": 8
+  }
+ ],
+ "MATRIZ": [
+  {
+   "cod": "OU",
+   "ord": 1,
+   "nucleo": "Militar",
+   "nome": "Ordem Unida",
+   "ch": 60,
+   "peso": 2,
+   "natureza": "Prática"
+  },
+  {
+   "cod": "TFM",
+   "ord": 2,
+   "nucleo": "Militar",
+   "nome": "Treinamento Físico Militar",
+   "ch": 120,
+   "peso": 3,
+   "natureza": "Prática"
+  },
+  {
+   "cod": "CCD",
+   "ord": 3,
+   "nucleo": "Jurídico",
+   "nome": "Comando, Chefia, Direção, Assessoramento e Gestão Pública",
+   "ch": 54,
+   "peso": 1,
+   "natureza": "Teórica"
+  },
+  {
+   "cod": "DH",
+   "ord": 4,
+   "nucleo": "Jurídico",
+   "nome": "Noções de Direitos Humanos",
+   "ch": 18,
+   "peso": 1,
+   "natureza": "Teórica"
+  },
+  {
+   "cod": "DA",
+   "ord": 5,
+   "nucleo": "Jurídico",
+   "nome": "Noções de Direito Administrativo",
+   "ch": 30,
+   "peso": 2,
+   "natureza": "Teórica"
+  },
+  {
+   "cod": "DPM",
+   "ord": 6,
+   "nucleo": "Jurídico",
+   "nome": "Noções de Direito Penal e Processual Penal Militar",
+   "ch": 50,
+   "peso": 3,
+   "natureza": "Teórica"
+  },
+  {
+   "cod": "DAD",
+   "ord": 7,
+   "nucleo": "Jurídico",
+   "nome": "Noções de Direito Administrativo Disciplinar Militar",
+   "ch": 50,
+   "peso": 3,
+   "natureza": "Teórica"
+  },
+  {
+   "cod": "DPA",
+   "ord": 8,
+   "nucleo": "Jurídico",
+   "nome": "Noções de Direito e Proteção Ambiental",
+   "ch": 12,
+   "peso": 1,
+   "natureza": "Teórica"
+  },
+  {
+   "cod": "PJM",
+   "ord": 9,
+   "nucleo": "Jurídico",
+   "nome": "Polícia Judiciária Militar",
+   "ch": 50,
+   "peso": 3,
+   "natureza": "Teórica"
+  },
+  {
+   "cod": "PADE",
+   "ord": 10,
+   "nucleo": "Jurídico",
+   "nome": "Processo Administrativo de Dano ao Erário (PADE)",
+   "ch": 12,
+   "peso": 3,
+   "natureza": "Teórica"
+  },
+  {
+   "cod": "EC",
+   "ord": 11,
+   "nucleo": "Jurídico",
+   "nome": "Ética e Cidadania",
+   "ch": 12,
+   "peso": 1,
+   "natureza": "Teórica"
+  },
+  {
+   "cod": "DSO",
+   "ord": 12,
+   "nucleo": "Jurídico",
+   "nome": "Documentos Sanitários de Origem",
+   "ch": 12,
+   "peso": 2,
+   "natureza": "Teórica"
+  },
+  {
+   "cod": "TGA",
+   "ord": 13,
+   "nucleo": "Administrativo",
+   "nome": "Teoria Geral da Administração / Fundamentos da Gestão Pública",
+   "ch": 12,
+   "peso": 1,
+   "natureza": "Teórica"
+  },
+  {
+   "cod": "FCO",
+   "ord": 14,
+   "nucleo": "Administrativo",
+   "nome": "Fiscalização de Contratos",
+   "ch": 30,
+   "peso": 2,
+   "natureza": "Teórica"
+  },
+  {
+   "cod": "RI",
+   "ord": 15,
+   "nucleo": "Administrativo",
+   "nome": "Relações Interpessoais",
+   "ch": 26,
+   "peso": 1,
+   "natureza": "Teórica"
+  },
+  {
+   "cod": "GAFO",
+   "ord": 16,
+   "nucleo": "Administrativo",
+   "nome": "Gestão de Administração Financeira e Orçamentária",
+   "ch": 30,
+   "peso": 1,
+   "natureza": "Teórica"
+  },
+  {
+   "cod": "GFMP",
+   "ord": 17,
+   "nucleo": "Administrativo",
+   "nome": "Gestão de Frotas, Materiais e Patrimônio Público",
+   "ch": 30,
+   "peso": 2,
+   "natureza": "Teórica"
+  },
+  {
+   "cod": "SEI",
+   "ord": 18,
+   "nucleo": "Administrativo",
+   "nome": "TIC — Utilização e Manuseio do SEI",
+   "ch": 30,
+   "peso": 2,
+   "natureza": "Teórico-prática"
+  },
+  {
+   "cod": "SISEG",
+   "ord": 19,
+   "nucleo": "Administrativo",
+   "nome": "Aplicação do SISEG e MOBILE",
+   "ch": 30,
+   "peso": 2,
+   "natureza": "Teórico-prática"
+  },
+  {
+   "cod": "EBAD",
+   "ord": 20,
+   "nucleo": "Administrativo",
+   "nome": "Estágio Básico de Defesa Civil (EBADEC)",
+   "ch": 30,
+   "peso": 2,
+   "natureza": "Teórico-prática"
+  },
+  {
+   "cod": "AMT",
+   "ord": 21,
+   "nucleo": "Profissionalizante",
+   "nome": "Armamento, Munição e Tiro",
+   "ch": 40,
+   "peso": 2,
+   "natureza": "Teórico-prática"
+  },
+  {
+   "cod": "SSAT",
+   "ord": 22,
+   "nucleo": "Profissionalizante",
+   "nome": "Sistema de Segurança e Saúde Aplicada ao Trabalho",
+   "ch": 12,
+   "peso": 1,
+   "natureza": "Teórica"
+  },
+  {
+   "cod": "PSE",
+   "ord": 23,
+   "nucleo": "Profissionalizante",
+   "nome": "Psicologia das Emergências",
+   "ch": 30,
+   "peso": 1,
+   "natureza": "Teórica"
+  },
+  {
+   "cod": "ST",
+   "ord": 24,
+   "nucleo": "Profissionalizante",
+   "nome": "Gestão em Operação de Salvamento Terrestre",
+   "ch": 60,
+   "peso": 3,
+   "natureza": "Operacional"
+  },
+  {
+   "cod": "APH",
+   "ord": 25,
+   "nucleo": "Profissionalizante",
+   "nome": "Atendimento Pré-Hospitalar",
+   "ch": 60,
+   "peso": 3,
+   "natureza": "Operacional"
+  },
+  {
+   "cod": "ALT",
+   "ord": 26,
+   "nucleo": "Profissionalizante",
+   "nome": "Gestão em Salvamento em Altura",
+   "ch": 60,
+   "peso": 3,
+   "natureza": "Operacional"
+  },
+  {
+   "cod": "SEAR",
+   "ord": 27,
+   "nucleo": "Profissionalizante",
+   "nome": "Segurança nas Edificações e Áreas de Risco",
+   "ch": 60,
+   "peso": 3,
+   "natureza": "Teórico-prática"
+  },
+  {
+   "cod": "CIF",
+   "ord": 28,
+   "nucleo": "Profissionalizante",
+   "nome": "Gestão em Operação de Combate a Incêndio Florestal",
+   "ch": 40,
+   "peso": 3,
+   "natureza": "Operacional"
+  },
+  {
+   "cod": "CIE",
+   "ord": 29,
+   "nucleo": "Profissionalizante",
+   "nome": "Gestão em Operações de Combate a Incêndio Estrutural",
+   "ch": 40,
+   "peso": 3,
+   "natureza": "Operacional"
+  },
+  {
+   "cod": "GEO",
+   "ord": 30,
+   "nucleo": "Profissionalizante",
+   "nome": "Geoprocessamento aplicado a Busca e Salvamento",
+   "ch": 40,
+   "peso": 3,
+   "natureza": "Teórico-prática"
+  },
+  {
+   "cod": "SCI",
+   "ord": 31,
+   "nucleo": "Profissionalizante",
+   "nome": "Sistema de Comando de Incidentes",
+   "ch": 40,
+   "peso": 2,
+   "natureza": "Teórico-prática"
+  },
+  {
+   "cod": "SAQ",
+   "ord": 32,
+   "nucleo": "Profissionalizante",
+   "nome": "Gestão em Operação de Salvamento Aquático",
+   "ch": 60,
+   "peso": 3,
+   "natureza": "Operacional"
+  },
+  {
+   "cod": "PP",
+   "ord": 33,
+   "nucleo": "Profissionalizante",
+   "nome": "Gestão em Operação com Produtos Perigosos",
+   "ch": 25,
+   "peso": 2,
+   "natureza": "Operacional"
+  },
+  {
+   "cod": "ATS",
+   "ord": 34,
+   "nucleo": "Profissionalizante",
+   "nome": "Abordagem Técnica a Tentativas de Suicídio",
+   "ch": 25,
+   "peso": 3,
+   "natureza": "Teórico-prática"
+  },
+  {
+   "cod": "EAGR",
+   "ord": 35,
+   "nucleo": "Profissionalizante",
+   "nome": "Estágio Avaliativo em Gestão de Busca e Resgate com Geo",
+   "ch": 48,
+   "peso": 3,
+   "natureza": "Operacional"
+  },
+  {
+   "cod": "CABM",
+   "ord": 36,
+   "nucleo": "FTPSP",
+   "nome": "Ciências Aplicadas à Atividade Bombeiro Militar",
+   "ch": 30,
+   "peso": 3,
+   "natureza": "Teórica"
+  },
+  {
+   "cod": "FPI",
+   "ord": 37,
+   "nucleo": "FTPSP",
+   "nome": "Fundamentos da Perícia de Incêndios",
+   "ch": 40,
+   "peso": 3,
+   "natureza": "Teórico-prática"
+  },
+  {
+   "cod": "ES",
+   "ord": 38,
+   "nucleo": "Estágios",
+   "nome": "Estágio Supervisionado",
+   "ch": 115,
+   "peso": null,
+   "natureza": "Estágio"
+  },
+  {
+   "cod": "ACP",
+   "ord": 39,
+   "nucleo": "Estágios",
+   "nome": "Atividades Complementares",
+   "ch": 115,
+   "peso": null,
+   "natureza": "Complementar"
+  }
+ ],
+ "INSTRUTORES_PADRAO": {
+  "OU": "Cap BM Graziele",
+  "TFM": "Cel BM Maia",
+  "CCD": "Cel BM Ribeiro",
+  "DH": "Ten Cel BM Roberto",
+  "DA": "Cel BM Constantino",
+  "DPM": "Cel BM Maia",
+  "DAD": "Cel BM Maia",
+  "DPA": "Cap BM Donadon",
+  "PJM": "Cel BM Maia",
+  "PADE": "Ten Cel BM Helvio",
+  "EC": "Maj PM Márcia",
+  "DSO": "Ten BM Pontes",
+  "TGA": "Cel BM RR Caetano",
+  "FCO": "Cap BM Jailton Pinheiro Pinto",
+  "RI": "Maj PM Márcia",
+  "GAFO": "Ten Cel BM Braga",
+  "GFMP": "Cap BM M. Reis",
+  "SEI": "Cap BM Graziele",
+  "SISEG": "Cap BM Alex",
+  "EBAD": "Cel BM Jaime",
+  "AMT": "Cel BM Jaime",
+  "SSAT": "Cap BM Rosineide",
+  "PSE": "Maj PM Márcia",
+  "ST": "Cel BM Samuel",
+  "APH": "Cap BM Rafael Maia",
+  "ALT": "Ten Cel BM Clivton",
+  "SEAR": "Cel BM Iranildo",
+  "CIF": "Cap BM Donadon",
+  "CIE": "Cap BM Palma",
+  "GEO": "Maj BM Geanderson",
+  "SCI": "Cel BM Rocha",
+  "SAQ": "Maj BM Márcio",
+  "PP": "Ten BM Celiane",
+  "ATS": "Cel BM Andrade Júnior",
+  "EAGR": "Cap BM Graziele",
+  "CABM": "Ten Cel BM Furukawa",
+  "FPI": "Cel BM Constantino",
+  "ES": "Cel BM Maia",
+  "ACP": "Cel BM Maia"
+ },
+ "NORMATIVOS": [
+  {
+   "id": "REG",
+   "tipo": "Regimento",
+   "nivel": "Curso",
+   "numero": "—",
+   "titulo": "Regimento do CHQAO BM 2026 — Turma VIII (Retificado)",
+   "autoridade": "Direção do Curso · CEEI",
+   "data": "15/05/2026",
+   "descricao": "Disciplina o funcionamento do curso: estrutura administrativa, regime escolar, frequência, avaliação, classificação, fatos observados, contraditório e ampla defesa, conduta escolar, recursos pedagógicos e demais matérias institucionais.",
+   "status": "Vigente",
+   "versaoAtual": "1.1",
+   "versoes": [
+    {
+     "v": "1.1",
+     "data": "15/05/2026",
+     "autor": "Cel BM Philipe R. M. Leite",
+     "desc": "Retificação consolidando deliberações do Comando-Geral, alinhamento dos prazos de recurso (item 12) e do fluxo de FOs (itens 13 a 15)."
+    },
+    {
+     "v": "1.0",
+     "data": "22/04/2026",
+     "autor": "Coordenação CHQAO",
+     "desc": "Versão original aprovada pela CEEI."
+    }
+   ],
+   "vinculadoA": [
+    "NOTA",
+    "PLANO",
+    "MAN"
+   ],
+   "topicos": [
+    "Estrutura administrativa",
+    "Regime escolar",
+    "Avaliação (VC / VR / EF)",
+    "Frequência (25% / 20%)",
+    "Fatos Observados",
+    "Contraditório e ampla defesa",
+    "Recursos pedagógicos",
+    "Conduta escolar"
+   ]
+  },
+  {
+   "id": "MAN",
+   "tipo": "Manual",
+   "nivel": "Curso",
+   "numero": "—",
+   "titulo": "Manual do Aluno — CHQAO BM 2026 — Turma VIII (Retificado)",
+   "autoridade": "Direção do Curso",
+   "data": "15/05/2026",
+   "descricao": "Orientações práticas ao Aluno Oficial: rotina escolar, uniforme, comportamento, deveres, direitos, escala de serviço escolar, procedimentos administrativos e canais de comunicação institucional.",
+   "status": "Vigente",
+   "versaoAtual": "1.1",
+   "versoes": [
+    {
+     "v": "1.1",
+     "data": "15/05/2026",
+     "autor": "Cel BM Philipe R. M. Leite",
+     "desc": "Retificação alinhando o Manual ao Regimento Retificado v1.1 e à Nota de Ensino vigente."
+    },
+    {
+     "v": "1.0",
+     "data": "22/04/2026",
+     "autor": "Coordenação CHQAO",
+     "desc": "Versão original."
+    }
+   ],
+   "vinculadoA": [
+    "REG",
+    "NOTA",
+    "PLANO"
+   ],
+   "topicos": [
+    "Rotina diária",
+    "Uniforme",
+    "Direitos e deveres",
+    "Escala de serviço escolar",
+    "Canais de comunicação"
+   ]
+  },
+  {
+   "id": "NOTA",
+   "tipo": "Diretriz",
+   "nivel": "Curso",
+   "numero": "—",
+   "titulo": "Nota de Ensino — Diretriz de Execução do CHQAO BM 2026",
+   "autoridade": "Direção do Curso · CEEI",
+   "data": "22/04/2026",
+   "descricao": "Estabelece os três princípios reitores da execução do curso: Unidade Documental, Rastreabilidade Administrativa e Segurança e Efetividade Pedagógica. Define posturas esperadas de instrutores, monitores, alunos e equipe pedagógica.",
+   "status": "Vigente",
+   "versaoAtual": "1.0",
+   "versoes": [
+    {
+     "v": "1.0",
+     "data": "22/04/2026",
+     "autor": "Direção do Curso",
+     "desc": "Diretriz original."
+    }
+   ],
+   "vinculadoA": [
+    "REG",
+    "MAN",
+    "PLANO"
+   ],
+   "topicos": [
+    "Unidade Documental",
+    "Rastreabilidade Administrativa",
+    "Segurança e Efetividade Pedagógica",
+    "Conduta do instrutor",
+    "Conduta do monitor"
+   ]
+  },
+  {
+   "id": "PLANO",
+   "tipo": "Plano",
+   "nivel": "Curso",
+   "numero": "—",
+   "titulo": "Plano de Trabalho do CHQAO BM 2026 — Turma VIII (Retificado)",
+   "autoridade": "Direção do Curso · CEEI",
+   "data": "15/05/2026",
+   "descricao": "Plano operacional do curso: cronograma, horário-base (item 6.3), recursos, locais, orçamento total aprovado de R$ 708.359,73, valores de h/a de instrutor (R$ 100,00) e monitor (R$ 75,00), e memória de cálculo financeira ajustada à turma de 8 alunos.",
+   "status": "Vigente",
+   "versaoAtual": "1.1",
+   "versoes": [
+    {
+     "v": "1.1",
+     "data": "15/05/2026",
+     "autor": "Cel BM Philipe R. M. Leite",
+     "desc": "Retificação ajustando memória financeira ao quantitativo definitivo de 8 alunos (R$ 687.414,76) e consolidação do horário-base."
+    },
+    {
+     "v": "1.0",
+     "data": "22/04/2026",
+     "autor": "Coordenação CHQAO",
+     "desc": "Versão original."
+    }
+   ],
+   "vinculadoA": [
+    "REG",
+    "NOTA",
+    "PUDS"
+   ],
+   "topicos": [
+    "Cronograma",
+    "Horário-base",
+    "Orçamento",
+    "Recursos e locais",
+    "Memória financeira"
+   ]
+  },
+  {
+   "id": "PUDS",
+   "tipo": "Plano",
+   "nivel": "Curso",
+   "numero": "—",
+   "titulo": "PUDs Consolidados — CHQAO BM 2026 (Versão 2)",
+   "autoridade": "Direção do Curso",
+   "data": "15/05/2026",
+   "descricao": "Plano de Unidade Didática consolidado das 37 disciplinas e 2 atividades curriculares (Estágio Supervisionado e Atividades Complementares), totalizando 1.638 h/a e 236 unidades didáticas (UDs).",
+   "status": "Vigente",
+   "versaoAtual": "2.0",
+   "versoes": [
+    {
+     "v": "2.0",
+     "data": "15/05/2026",
+     "autor": "Coordenação CHQAO",
+     "desc": "Versão 2 consolidada com revisão de ementas, UDs e regras de avaliação."
+    },
+    {
+     "v": "1.0",
+     "data": "30/03/2026",
+     "autor": "Coordenação CHQAO",
+     "desc": "Versão original."
+    }
+   ],
+   "vinculadoA": [
+    "PLANO",
+    "REG"
+   ],
+   "topicos": [
+    "37 disciplinas",
+    "2 atividades curriculares",
+    "1.638 h/a",
+    "236 UDs",
+    "Regras de avaliação por disciplina"
+   ]
+  },
+  {
+   "id": "EDITAL",
+   "tipo": "Edital",
+   "nivel": "CBMRO",
+   "numero": "Nº 5/2026/CBM-CEEI",
+   "titulo": "Edital de Abertura do CHQAO BM 2026 — Turma VIII",
+   "autoridade": "CEEI · Comando-Geral do CBMRO",
+   "data": "10/03/2026",
+   "descricao": "Edital de abertura do processo seletivo do CHQAO BM 2026, dispondo sobre requisitos, fases (PAD e TAF), classificação, matrícula e direitos e deveres dos candidatos.",
+   "status": "Vigente",
+   "versaoAtual": "1.0",
+   "versoes": [
+    {
+     "v": "1.0",
+     "data": "10/03/2026",
+     "autor": "CEEI",
+     "desc": "Edital publicado em BG."
+    }
+   ],
+   "vinculadoA": [
+    "IG01",
+    "DGE"
+   ],
+   "topicos": [
+    "Requisitos",
+    "Fases (PAD e TAF)",
+    "Classificação",
+    "Matrícula"
+   ]
+  },
+  {
+   "id": "DGE",
+   "tipo": "Diretriz",
+   "nivel": "CBMRO",
+   "numero": "—",
+   "titulo": "Diretriz Geral de Ensino do CBMRO",
+   "autoridade": "CEEI · Comando-Geral do CBMRO",
+   "data": "—",
+   "descricao": "Norma reguladora do Sistema de Ensino do CBMRO: define cursos, estágios, regimes pedagógicos, autoridades competentes e responsabilidades institucionais no âmbito do ensino corporativo.",
+   "status": "Vigente",
+   "versaoAtual": "1.0",
+   "versoes": [
+    {
+     "v": "1.0",
+     "data": "—",
+     "autor": "CEEI",
+     "desc": "Versão vigente em circulação."
+    }
+   ],
+   "vinculadoA": [
+    "IG01",
+    "DEC8881",
+    "IGBM"
+   ],
+   "topicos": [
+    "Sistema de Ensino do CBMRO",
+    "Cursos e estágios",
+    "Autoridades competentes"
+   ]
+  },
+  {
+   "id": "IG01",
+   "tipo": "Instrução",
+   "nivel": "CBMRO",
+   "numero": "IG-01/COEI-CBMRO/2017",
+   "titulo": "Instrução Geral nº 01 — Padrões de Avaliação Documental (PAD) e Teste de Aptidão Física (TAF)",
+   "autoridade": "COEI · CBMRO",
+   "data": "2017",
+   "descricao": "Disciplina os procedimentos de PAD e TAF para os processos seletivos de ingresso em cursos do CBMRO, incluindo o CHQAO.",
+   "status": "Vigente",
+   "versaoAtual": "1.0",
+   "versoes": [
+    {
+     "v": "1.0",
+     "data": "2017",
+     "autor": "COEI",
+     "desc": "Instrução original em vigor."
+    }
+   ],
+   "vinculadoA": [
+    "EDITAL",
+    "DGE"
+   ],
+   "topicos": [
+    "PAD",
+    "TAF",
+    "Testes físicos",
+    "Avaliação documental"
+   ]
+  },
+  {
+   "id": "DEC8881",
+   "tipo": "Decreto",
+   "nivel": "Estadual",
+   "numero": "Decreto nº 8.881/1999",
+   "titulo": "Regulamento dos Cursos e Estágios do CBMRO",
+   "autoridade": "Governo do Estado de Rondônia",
+   "data": "1999",
+   "descricao": "Regulamenta os cursos e estágios realizados pelo Corpo de Bombeiros Militar do Estado de Rondônia, conferindo respaldo jurídico ao sistema de ensino corporativo.",
+   "status": "Vigente",
+   "versaoAtual": "1.0",
+   "versoes": [
+    {
+     "v": "1.0",
+     "data": "1999",
+     "autor": "Governo de RO",
+     "desc": "Texto original em vigor."
+    }
+   ],
+   "vinculadoA": [
+    "DGE",
+    "ORG2204"
+   ],
+   "topicos": [
+    "Cursos do CBMRO",
+    "Estágios",
+    "Habilitação para promoção"
+   ]
+  },
+  {
+   "id": "IGBM",
+   "tipo": "Instrução",
+   "nivel": "CBMRO",
+   "numero": "—",
+   "titulo": "Instrução Geral Bombeiro Militar",
+   "autoridade": "Comando-Geral do CBMRO",
+   "data": "—",
+   "descricao": "Normas gerais de funcionamento administrativo, operacional e disciplinar aplicáveis ao militar do CBMRO em todas as situações do serviço.",
+   "status": "Vigente",
+   "versaoAtual": "1.0",
+   "versoes": [
+    {
+     "v": "1.0",
+     "data": "—",
+     "autor": "Comando-Geral",
+     "desc": "Versão vigente."
+    }
+   ],
+   "vinculadoA": [
+    "EST82",
+    "ORG2204"
+   ],
+   "topicos": [
+    "Rotina administrativa",
+    "Procedimentos operacionais",
+    "Disciplina"
+   ]
+  },
+  {
+   "id": "EST82",
+   "tipo": "Lei",
+   "nivel": "Estadual",
+   "numero": "Decreto-Lei nº 09-A/1982",
+   "titulo": "Estatuto dos Policiais e Bombeiros Militares do Estado de Rondônia",
+   "autoridade": "Governo do Estado de Rondônia",
+   "data": "1982",
+   "descricao": "Estatuto que rege a carreira, direitos, deveres, prerrogativas, deveres éticos e responsabilidades dos policiais e bombeiros militares do Estado de Rondônia.",
+   "status": "Vigente",
+   "versaoAtual": "1.0",
+   "versoes": [
+    {
+     "v": "1.0",
+     "data": "1982",
+     "autor": "Governo de RO",
+     "desc": "Texto original, com alterações posteriores incorporadas."
+    }
+   ],
+   "vinculadoA": [
+    "ORG2204",
+    "QAO3674"
+   ],
+   "topicos": [
+    "Carreira",
+    "Direitos e deveres",
+    "Promoção",
+    "Disciplina",
+    "Prerrogativas"
+   ]
+  },
+  {
+   "id": "ORG2204",
+   "tipo": "Lei",
+   "nivel": "Estadual",
+   "numero": "Lei nº 2.204/2009",
+   "titulo": "Lei Orgânica do CBMRO",
+   "autoridade": "Assembleia Legislativa de Rondônia",
+   "data": "2009",
+   "descricao": "Lei Orgânica que define a estrutura, competências, missão e organização do Corpo de Bombeiros Militar do Estado de Rondônia.",
+   "status": "Vigente",
+   "versaoAtual": "1.0",
+   "versoes": [
+    {
+     "v": "1.0",
+     "data": "2009",
+     "autor": "ALE-RO",
+     "desc": "Texto original em vigor."
+    }
+   ],
+   "vinculadoA": [
+    "EST82",
+    "LON14751"
+   ],
+   "topicos": [
+    "Estrutura organizacional",
+    "Competências",
+    "Missão institucional"
+   ]
+  },
+  {
+   "id": "QAO3674",
+   "tipo": "Lei",
+   "nivel": "Estadual",
+   "numero": "Lei nº 3.674/2015",
+   "titulo": "Quadro Auxiliar de Oficiais (QAO) do CBMRO",
+   "autoridade": "Assembleia Legislativa de Rondônia",
+   "data": "2015",
+   "descricao": "Lei instituidora do Quadro Auxiliar de Oficiais do CBMRO, definindo critérios de acesso, atribuições, posto inicial e organização da carreira.",
+   "status": "Vigente",
+   "versaoAtual": "1.0",
+   "versoes": [
+    {
+     "v": "1.0",
+     "data": "2015",
+     "autor": "ALE-RO",
+     "desc": "Texto original."
+    }
+   ],
+   "vinculadoA": [
+    "QAO5159",
+    "EST82"
+   ],
+   "topicos": [
+    "Quadro Auxiliar de Oficiais",
+    "Habilitação para 2º Ten BM",
+    "Carreira"
+   ]
+  },
+  {
+   "id": "QAO5159",
+   "tipo": "Lei",
+   "nivel": "Estadual",
+   "numero": "Lei nº 5.159/2021",
+   "titulo": "Alterações ao Quadro Auxiliar de Oficiais do CBMRO",
+   "autoridade": "Assembleia Legislativa de Rondônia",
+   "data": "2021",
+   "descricao": "Promove alterações na Lei nº 3.674/2015, ajustando critérios e procedimentos do acesso ao QAO no CBMRO, antecedendo a transição normativa para o QOE.",
+   "status": "Vigente",
+   "versaoAtual": "1.0",
+   "versoes": [
+    {
+     "v": "1.0",
+     "data": "2021",
+     "autor": "ALE-RO",
+     "desc": "Texto original."
+    }
+   ],
+   "vinculadoA": [
+    "QAO3674",
+    "LON14751"
+   ],
+   "topicos": [
+    "Alterações ao QAO",
+    "Transição para QOE"
+   ]
+  },
+  {
+   "id": "REM1063",
+   "tipo": "Lei",
+   "nivel": "Estadual",
+   "numero": "Lei nº 1.063/2002",
+   "titulo": "Remuneração dos Militares Estaduais de Rondônia",
+   "autoridade": "Assembleia Legislativa de Rondônia",
+   "data": "2002",
+   "descricao": "Dispõe sobre a estrutura remuneratória dos militares estaduais de Rondônia, inclusive parcelas de habilitação e vantagens.",
+   "status": "Vigente",
+   "versaoAtual": "1.0",
+   "versoes": [
+    {
+     "v": "1.0",
+     "data": "2002",
+     "autor": "ALE-RO",
+     "desc": "Texto original, com alterações posteriores."
+    }
+   ],
+   "vinculadoA": [
+    "EST82"
+   ],
+   "topicos": [
+    "Remuneração",
+    "Vantagens",
+    "Parcelas de habilitação"
+   ]
+  },
+  {
+   "id": "EFE4294",
+   "tipo": "Lei",
+   "nivel": "Estadual",
+   "numero": "Lei nº 4.294/2018",
+   "titulo": "Efetivo do CBMRO",
+   "autoridade": "Assembleia Legislativa de Rondônia",
+   "data": "2018",
+   "descricao": "Define o efetivo do CBMRO por posto e graduação, base normativa para o planejamento de vagas em concursos e cursos de habilitação.",
+   "status": "Vigente",
+   "versaoAtual": "1.0",
+   "versoes": [
+    {
+     "v": "1.0",
+     "data": "2018",
+     "autor": "ALE-RO",
+     "desc": "Texto original."
+    }
+   ],
+   "vinculadoA": [
+    "ORG2204",
+    "QAO5159"
+   ],
+   "topicos": [
+    "Efetivo por posto",
+    "Quadro de vagas"
+   ]
+  },
+  {
+   "id": "CF88",
+   "tipo": "Lei",
+   "nivel": "Federal",
+   "numero": "CF/1988 (arts. 42 e 144)",
+   "titulo": "Constituição Federal — Militares dos Estados e Segurança Pública",
+   "autoridade": "Assembleia Nacional Constituinte",
+   "data": "05/10/1988",
+   "descricao": "Base constitucional dos militares dos Estados (art. 42) e do Sistema de Segurança Pública (art. 144), incluindo a missão dos Corpos de Bombeiros Militares.",
+   "status": "Vigente",
+   "versaoAtual": "1.0",
+   "versoes": [
+    {
+     "v": "1.0",
+     "data": "05/10/1988",
+     "autor": "ANC",
+     "desc": "Texto promulgado, com emendas posteriores aplicáveis."
+    }
+   ],
+   "vinculadoA": [
+    "LON14751",
+    "SUSP"
+   ],
+   "topicos": [
+    "Art. 42 — Militares dos Estados",
+    "Art. 144 — Segurança Pública",
+    "Missão constitucional do CBM"
+   ]
+  },
+  {
+   "id": "LON14751",
+   "tipo": "Lei",
+   "nivel": "Federal",
+   "numero": "Lei nº 14.751/2023",
+   "titulo": "Lei Orgânica Nacional dos Corpos de Bombeiros Militares",
+   "autoridade": "Congresso Nacional",
+   "data": "12/12/2023",
+   "descricao": "Estabelece normas gerais de organização, preparo e emprego dos Corpos de Bombeiros Militares dos Estados, do Distrito Federal e dos Territórios, com efeitos sobre quadros e carreiras — base da transição do CHQAO para o Quadro de Oficiais Especialistas (QOE).",
+   "status": "Vigente",
+   "versaoAtual": "1.0",
+   "versoes": [
+    {
+     "v": "1.0",
+     "data": "12/12/2023",
+     "autor": "Congresso Nacional",
+     "desc": "Texto sancionado."
+    }
+   ],
+   "vinculadoA": [
+    "CF88",
+    "ORG2204",
+    "QAO5159"
+   ],
+   "topicos": [
+    "Organização nacional",
+    "Quadros de carreira",
+    "Quadro de Oficiais Especialistas (QOE)",
+    "Transição normativa do CHQAO"
+   ]
+  },
+  {
+   "id": "SUSP",
+   "tipo": "Lei",
+   "nivel": "Federal",
+   "numero": "Lei nº 13.675/2018",
+   "titulo": "Sistema Único de Segurança Pública (SUSP)",
+   "autoridade": "Congresso Nacional",
+   "data": "11/06/2018",
+   "descricao": "Institui o SUSP e a Política Nacional de Segurança Pública e Defesa Social, integrando os órgãos de segurança pública dos entes federativos, incluindo os Corpos de Bombeiros Militares.",
+   "status": "Vigente",
+   "versaoAtual": "1.0",
+   "versoes": [
+    {
+     "v": "1.0",
+     "data": "11/06/2018",
+     "autor": "Congresso Nacional",
+     "desc": "Texto sancionado."
+    }
+   ],
+   "vinculadoA": [
+    "CF88",
+    "DEC9489"
+   ],
+   "topicos": [
+    "SUSP",
+    "Política Nacional de Segurança Pública",
+    "Integração interagências"
+   ]
+  },
+  {
+   "id": "DEC9489",
+   "tipo": "Decreto",
+   "nivel": "Federal",
+   "numero": "Decreto nº 9.489/2018",
+   "titulo": "Regulamento da Lei do SUSP",
+   "autoridade": "Presidência da República",
+   "data": "30/08/2018",
+   "descricao": "Regulamenta a Lei nº 13.675/2018 (SUSP), detalhando instrumentos, instâncias de coordenação e mecanismos de integração entre os órgãos de segurança pública.",
+   "status": "Vigente",
+   "versaoAtual": "1.0",
+   "versoes": [
+    {
+     "v": "1.0",
+     "data": "30/08/2018",
+     "autor": "Presidência da República",
+     "desc": "Texto original."
+    }
+   ],
+   "vinculadoA": [
+    "SUSP",
+    "MCN"
+   ],
+   "topicos": [
+    "Regulamento do SUSP",
+    "Coordenação interagências"
+   ]
+  },
+  {
+   "id": "DL667",
+   "tipo": "Lei",
+   "nivel": "Federal",
+   "numero": "Decreto-Lei nº 667/1969",
+   "titulo": "Reorganização das Polícias Militares e Corpos de Bombeiros Militares",
+   "autoridade": "Governo Federal",
+   "data": "02/07/1969",
+   "descricao": "Norma histórica de reorganização das Polícias Militares e Corpos de Bombeiros Militares dos Estados, dispondo sobre vinculação, controle e missões institucionais.",
+   "status": "Vigente",
+   "versaoAtual": "1.0",
+   "versoes": [
+    {
+     "v": "1.0",
+     "data": "02/07/1969",
+     "autor": "Governo Federal",
+     "desc": "Texto original em vigor, com alterações posteriores."
+    }
+   ],
+   "vinculadoA": [
+    "DEC88777",
+    "CF88"
+   ],
+   "topicos": [
+    "Reorganização institucional",
+    "Vinculação federativa",
+    "Controle e coordenação"
+   ]
+  },
+  {
+   "id": "DEC88777",
+   "tipo": "Decreto",
+   "nivel": "Federal",
+   "numero": "Decreto nº 88.777/1983",
+   "titulo": "Regulamento para as Polícias Militares e Corpos de Bombeiros Militares (R-200)",
+   "autoridade": "Presidência da República",
+   "data": "30/09/1983",
+   "descricao": "Conhecido como R-200, regulamenta as Polícias Militares e Corpos de Bombeiros Militares dos Estados, definindo organização, ensino, instrução, regime jurídico, hierarquia e disciplina.",
+   "status": "Vigente",
+   "versaoAtual": "1.0",
+   "versoes": [
+    {
+     "v": "1.0",
+     "data": "30/09/1983",
+     "autor": "Presidência da República",
+     "desc": "Texto original em vigor."
+    }
+   ],
+   "vinculadoA": [
+    "DL667",
+    "CF88"
+   ],
+   "topicos": [
+    "R-200",
+    "Ensino e instrução",
+    "Hierarquia e disciplina",
+    "Regime jurídico"
+   ]
+  },
+  {
+   "id": "MCN",
+   "tipo": "Diretriz",
+   "nivel": "Federal",
+   "numero": "MCN/SENASP — 2014",
+   "titulo": "Matriz Curricular Nacional para Ações Formativas dos Profissionais da Área de Segurança Pública",
+   "autoridade": "SENASP · Ministério da Justiça",
+   "data": "2014",
+   "descricao": "Define diretrizes curriculares de referência nacional para a formação dos profissionais de segurança pública, base de comparação para os currículos dos cursos próprios dos CBM e das PM estaduais.",
+   "status": "Vigente",
+   "versaoAtual": "1.0",
+   "versoes": [
+    {
+     "v": "1.0",
+     "data": "2014",
+     "autor": "SENASP",
+     "desc": "Versão vigente."
+    }
+   ],
+   "vinculadoA": [
+    "SUSP",
+    "DEC9489"
+   ],
+   "topicos": [
+    "Diretrizes curriculares nacionais",
+    "Áreas temáticas",
+    "Referência para currículos próprios"
+   ]
+  }
+ ]
+}

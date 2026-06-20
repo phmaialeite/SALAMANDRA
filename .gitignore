@@ -1,0 +1,15 @@
+# Banco de dados local — NUNCA versionar nem sincronizar (corrompe entre máquinas)
+backend/pgdata/
+pgdata/
+
+# Dependências (grandes; já presentes na cópia local e no pacote do Drive)
+node_modules/
+
+# Backups exportados (dados) — mantém só o LEIA-ME da pasta
+_backups/*.json
+
+# Lixo do sistema operacional / Google Drive
+.DS_Store
+._*
+.tmp.drive*
+* 2.*

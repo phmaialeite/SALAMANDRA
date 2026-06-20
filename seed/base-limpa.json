@@ -1,0 +1,130 @@
+{
+  "FOS": [],
+  "RECURSOS": [],
+  "NOTAS": {
+    "a1": {
+      "OU": null,
+      "TFM": null,
+      "CCD": null,
+      "DPM": null,
+      "APH": null,
+      "ALT": null
+    },
+    "a2": {
+      "OU": null,
+      "TFM": null,
+      "CCD": null,
+      "DPM": null,
+      "APH": null,
+      "ALT": null
+    },
+    "a3": {
+      "OU": null,
+      "TFM": null,
+      "CCD": null,
+      "DPM": null,
+      "APH": null,
+      "ALT": null
+    },
+    "a4": {
+      "OU": null,
+      "TFM": null,
+      "CCD": null,
+      "DPM": null,
+      "APH": null,
+      "ALT": null
+    },
+    "a5": {
+      "OU": null,
+      "TFM": null,
+      "CCD": null,
+      "DPM": null,
+      "APH": null,
+      "ALT": null
+    },
+    "a6": {
+      "OU": null,
+      "TFM": null,
+      "CCD": null,
+      "DPM": null,
+      "APH": null,
+      "ALT": null
+    },
+    "a7": {
+      "OU": null,
+      "TFM": null,
+      "CCD": null,
+      "DPM": null,
+      "APH": null,
+      "ALT": null
+    },
+    "a8": {
+      "OU": null,
+      "TFM": null,
+      "CCD": null,
+      "DPM": null,
+      "APH": null,
+      "ALT": null
+    }
+  },
+  "FREQ": {
+    "a1": {
+      "total": 0,
+      "OU": 0,
+      "TFM": 0,
+      "CCD": 0,
+      "DPM": 0
+    },
+    "a2": {
+      "total": 0,
+      "OU": 0,
+      "TFM": 0,
+      "CCD": 0,
+      "DPM": 0
+    },
+    "a3": {
+      "total": 0,
+      "OU": 0,
+      "TFM": 0,
+      "CCD": 0,
+      "DPM": 0
+    },
+    "a4": {
+      "total": 0,
+      "OU": 0,
+      "TFM": 0,
+      "CCD": 0,
+      "DPM": 0
+    },
+    "a5": {
+      "total": 0,
+      "OU": 0,
+      "TFM": 0,
+      "CCD": 0,
+      "DPM": 0
+    },
+    "a6": {
+      "total": 0,
+      "OU": 0,
+      "TFM": 0,
+      "CCD": 0,
+      "DPM": 0
+    },
+    "a7": {
+      "total": 0,
+      "OU": 0,
+      "TFM": 0,
+      "CCD": 0,
+      "DPM": 0
+    },
+    "a8": {
+      "total": 0,
+      "OU": 0,
+      "TFM": 0,
+      "CCD": 0,
+      "DPM": 0
+    }
+  },
+  "FREQ_LANC": [],
+  "NOTAS_LANC": []
+}
