@@ -1,0 +1,18 @@
+<svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="SALAMANDRA — CHQAO BM 2026">
+  <title>SALAMANDRA</title>
+  <!-- Fundo preto (brasão sobre preto) -->
+  <rect x="0" y="0" width="1024" height="1024" rx="180" ry="180" fill="#000000"/>
+  <!-- Brasão da Salamandra (arte oficial, variante emblema), centralizado -->
+  <g transform="translate(197,152) scale(9)">
+    <path d="M35 4 L63 12 V41 C63 59 50 71 35 76 C20 71 7 59 7 41 V12 Z" fill="#2a0c0c" stroke="#c0392b" stroke-width="1.8"/>
+    <path d="M35 9 L58.5 14.6 V41 C58.5 56 47.5 66.5 35 71 C22.5 66.5 11.5 56 11.5 41 V14.6 Z" fill="none" stroke="#d9b24a" stroke-width="0.7"/>
+    <path d="M44 20 c4.2 5 -1.4 7.6 1.4 11.8 c4 -3 5.2 1.2 3 5 c5.2 -3.4 3 -12 -4.4 -16.8z" fill="none" stroke="#e8852b" stroke-width="1.6"/>
+    <g fill="none" stroke="#ecca6e" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M18 46 C 23 37, 33 39, 37 47 C 40 53, 47 53, 50 47 C 51.5 44, 50 40, 47 41.5"/>
+      <path d="M24 42 l -3 7 M24 42 l 2 7"/>
+      <path d="M37.5 46 l -2 7 M37.5 46 l 3 7"/>
+    </g>
+    <circle cx="17.5" cy="46.5" r="3.2" fill="none" stroke="#ecca6e" stroke-width="1.8"/>
+    <circle cx="16.6" cy="45.6" r="0.9" fill="#ecca6e"/>
+  </g>
+</svg>
