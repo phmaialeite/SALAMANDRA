@@ -1,16 +1,14 @@
 <svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="SALAMANDRA">
   <title>SALAMANDRA</title>
   <rect x="0" y="0" width="1024" height="1024" rx="180" ry="180" fill="#000000"/>
-  <!-- Salamandra ORIGINAL (sem alteracoes), ampliada, rotacionada e espelhada (cabeca erguida a esquerda) -->
-  <g transform="translate(1024,0) scale(-1,1)">
-    <g transform="translate(512,512) rotate(105) scale(22) translate(-32,-45)">
-      <g fill="none" stroke="#ecca6e" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M18 46 C 23 37, 33 39, 37 47 C 40 53, 47 53, 50 47 C 51.5 44, 50 40, 47 41.5"/>
-        <path d="M24 42 l -3 7 M24 42 l 2 7"/>
-        <path d="M37.5 46 l -2 7 M37.5 46 l 3 7"/>
-      </g>
-      <circle cx="17.5" cy="46.5" r="3.2" fill="none" stroke="#ecca6e" stroke-width="1.8"/>
-      <circle cx="16.6" cy="45.6" r="0.9" fill="#ecca6e"/>
+  <!-- Salamandra ORIGINAL (sem alteracoes), ampliada e rotacionada (cabeca erguida, inclinada a direita) -->
+  <g transform="translate(512,512) rotate(105) scale(22) translate(-32,-45)">
+    <g fill="none" stroke="#ecca6e" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M18 46 C 23 37, 33 39, 37 47 C 40 53, 47 53, 50 47 C 51.5 44, 50 40, 47 41.5"/>
+      <path d="M24 42 l -3 7 M24 42 l 2 7"/>
+      <path d="M37.5 46 l -2 7 M37.5 46 l 3 7"/>
     </g>
+    <circle cx="17.5" cy="46.5" r="3.2" fill="none" stroke="#ecca6e" stroke-width="1.8"/>
+    <circle cx="16.6" cy="45.6" r="0.9" fill="#ecca6e"/>
   </g>
 </svg>
