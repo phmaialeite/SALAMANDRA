@@ -2,8 +2,8 @@
 backend/pgdata/
 pgdata/
 
-# Dependências (grandes; já presentes na cópia local e no pacote do Drive)
-node_modules/
+# Dependências: VERSIONADAS de propósito (puro JS + WASM, portáveis) para o
+# Linux/qualquer máquina "clonar e rodar" sem npm install nem internet.
 
 # Backups exportados (dados) — mantém só o LEIA-ME da pasta
 _backups/*.json
