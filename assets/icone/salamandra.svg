@@ -2,7 +2,7 @@
   <title>SALAMANDRA</title>
   <rect x="0" y="0" width="1024" height="1024" rx="180" ry="180" fill="#000000"/>
   <!-- Salamandra ORIGINAL (sem alteracoes), ampliada e rotacionada (cabeca erguida, inclinada a direita) -->
-  <g transform="translate(512,512) rotate(105) scale(22) translate(-32,-45)">
+  <g transform="translate(512,512) rotate(90) scale(22) translate(-32,-45)">
     <g fill="none" stroke="#ecca6e" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
       <path d="M18 46 C 23 37, 33 39, 37 47 C 40 53, 47 53, 50 47 C 51.5 44, 50 40, 47 41.5"/>
       <path d="M24 42 l -3 7 M24 42 l 2 7"/>
