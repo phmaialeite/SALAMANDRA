@@ -2054,14 +2054,14 @@ function activityInfo(code){
 const QTS_SLOTS = [
   {n:1,  h:"07h30 – 08h20", ord:"1ª", sessao:"manha"},
   {n:2,  h:"08h20 – 09h10", ord:"2ª", sessao:"manha"},
-  {n:3,  h:"09h20 – 10h10", ord:"3ª", sessao:"manha"},
+  {n:3,  h:"09h10 – 10h00", ord:"3ª", sessao:"manha"},
   {n:4,  h:"10h10 – 11h00", ord:"4ª", sessao:"manha"},
   {n:5,  h:"11h00 – 11h50", ord:"5ª", sessao:"manha"},
-  {n:6,  h:"14h00 – 14h50", ord:"6ª", sessao:"tarde"},
-  {n:7,  h:"14h50 – 15h40", ord:"7ª", sessao:"tarde"},
-  {n:8,  h:"15h50 – 16h40", ord:"8ª", sessao:"tarde"},
-  {n:9,  h:"16h40 – 17h30", ord:"9ª", sessao:"tarde"},
-  {n:10, h:"17h30 – 18h20", ord:"10ª", sessao:"tarde"},
+  {n:6,  h:"13h30 – 14h20", ord:"6ª", sessao:"tarde"},
+  {n:7,  h:"14h20 – 15h10", ord:"7ª", sessao:"tarde"},
+  {n:8,  h:"15h10 – 16h00", ord:"8ª", sessao:"tarde"},
+  {n:9,  h:"16h10 – 17h00", ord:"9ª", sessao:"tarde"},
+  {n:10, h:"17h00 – 17h50", ord:"10ª", sessao:"tarde"},
 ];
 const QTS_SLOTS_NOITE = [
   {n:11, h:"18h30 – 19h20", ord:"11ª", sessao:"noite"},
@@ -2069,16 +2069,17 @@ const QTS_SLOTS_NOITE = [
   {n:13, h:"20h10 – 21h00", ord:"13ª", sessao:"noite"},
   {n:14, h:"21h00 – 21h50", ord:"14ª", sessao:"noite"},
 ];
-// Formaturas — marcos do dia (item 6.3 do Plano)
+// Formaturas e marcos do dia (Regimento — Das Atividades Diárias, item 14)
 const FORMATURAS = [
-  {h:"07h00 – 07h30", lbl:"Formatura matinal"},
-  {h:"13h50 – 14h00", lbl:"Formatura vespertina"},
+  {h:"07h10 – 07h30", lbl:"Formatura matinal / revista"},
+  {h:"13h20 – 13h30", lbl:"Formatura vespertina"},
+  {h:"06h00 – 06h50", lbl:"Treinamento Físico Militar"},
 ];
-// Intervalos OFICIAIS
+// Intervalos OFICIAIS (Regimento — Das Atividades Diárias, item 14)
 const INTERVALOS = [
-  {h:"09h10 – 09h20", lbl:"Intervalo"},
-  {h:"11h50 – 13h50", lbl:"Intervalo / Almoço"},
-  {h:"15h40 – 15h50", lbl:"Intervalo"},
+  {h:"10h00 – 10h10", lbl:"Intervalo"},
+  {h:"11h50 – 13h20", lbl:"Intervalo / Almoço"},
+  {h:"16h00 – 16h10", lbl:"Intervalo"},
   {h:"18h20 – 18h30", lbl:"Intervalo (se noturno)"},
 ];
 
@@ -4048,7 +4049,11 @@ function viewQTS(){
     grid+=`<div class="qts-dh"${cmp?' style="background:#e4efe0"':''}>${DIAS_ABR[i]}<span>${i<5? d+'-feira' : d}</span>${cmp?`<em style="display:block;font-style:normal;font-size:10px;color:#2f5233;font-weight:700;margin-top:2px">🌿 ${cmp.ha} h/a</em>`:''}</div>`;
   });
 
-  // Linha de Formatura matinal (07h00-07h30)
+  // Treinamento Físico Militar (06h00-06h50) — marco do dia
+  grid += `<div class="qts-marker">${FORMATURAS[2].h}<span>${FORMATURAS[2].lbl}</span></div>`;
+  for(let i=0;i<DIAS.length;i++) grid += `<div class="qts-marker-cell">TFM</div>`;
+
+  // Linha de Formatura matinal (07h10-07h30)
   grid += `<div class="qts-marker">${FORMATURAS[0].h}<span>${FORMATURAS[0].lbl}</span></div>`;
   for(let i=0;i<DIAS.length;i++) grid += `<div class="qts-marker-cell">⚐ Formatura</div>`;
 
@@ -4060,8 +4065,8 @@ function viewQTS(){
       const b = qts.blocos.find(b=>b.dia===d+1 && b.slot===s.n);
       grid += qtsCell(b, canEdit);
     });
-    // Após a 2ª h/a, intervalo (09h10-09h30)
-    if(s.n===2){
+    // Após a 3ª h/a, intervalo (10h00-10h10)
+    if(s.n===3){
       grid += `<div class="qts-interval">${INTERVALOS[0].h}<span>${INTERVALOS[0].lbl}</span></div>`;
       for(let j=0;j<DIAS.length;j++) grid += `<div class="qts-interval-cell">—</div>`;
     }
@@ -4079,8 +4084,8 @@ function viewQTS(){
       const b = qts.blocos.find(b=>b.dia===d+1 && b.slot===s.n);
       grid += qtsCell(b, canEdit);
     });
-    // Após a 7ª h/a, intervalo (15h40-16h00)
-    if(s.n===7){
+    // Após a 8ª h/a, intervalo (16h00-16h10)
+    if(s.n===8){
       grid += `<div class="qts-interval">${INTERVALOS[2].h}<span>${INTERVALOS[2].lbl}</span></div>`;
       for(let j=0;j<DIAS.length;j++) grid += `<div class="qts-interval-cell">—</div>`;
     }
@@ -4612,10 +4617,15 @@ function pdfQTSGrid(doc, w, qts){
   const slots = qts.noturnoAtivo ? [...QTS_SLOTS, ...QTS_SLOTS_NOITE] : QTS_SLOTS;
   const body = [];
 
+  // Linha: Treinamento Físico Militar (06h00-06h50)
+  body.push([
+    {content:'06h00 – 06h50\nTFM', styles:{fillColor:[26,31,42], textColor:[232,232,236], fontStyle:'bold', halign:'center', valign:'middle', fontSize:5.5, cellPadding:0.6}},
+    ...DIAS.map(()=>({content:'Treinamento Físico Militar', styles:{fillColor:[233,238,242], textColor:[40,52,66], fontStyle:'normal', halign:'center', valign:'middle', fontSize:6, cellPadding:0.6}}))
+  ]);
   // Linha: Formatura matinal
   body.push([
-    {content:'07h00 – 07h30\nFormatura', styles:{fillColor:[191,39,39], textColor:[255,255,255], fontStyle:'bold', halign:'center', valign:'middle', fontSize:5.5, cellPadding:0.6}},
-    ...DIAS.map(()=>({content:'Formatura matinal', styles:{fillColor:[253,231,231], textColor:[124,24,24], fontStyle:'bold', halign:'center', valign:'middle', fontSize:6, cellPadding:0.6}}))
+    {content:'07h10 – 07h30\nFormatura', styles:{fillColor:[191,39,39], textColor:[255,255,255], fontStyle:'bold', halign:'center', valign:'middle', fontSize:5.5, cellPadding:0.6}},
+    ...DIAS.map(()=>({content:'Formatura matinal / revista', styles:{fillColor:[253,231,231], textColor:[124,24,24], fontStyle:'bold', halign:'center', valign:'middle', fontSize:6, cellPadding:0.6}}))
   ]);
 
   slots.forEach((slot, idx)=>{
@@ -4643,24 +4653,24 @@ function pdfQTSGrid(doc, w, qts){
       })
     ];
     body.push(row);
-    // Após 2ª h/a — intervalo (09h10-09h30)
-    if(slot.n===2){
+    // Após 3ª h/a — intervalo (10h00-10h10)
+    if(slot.n===3){
       body.push([
-        {content:'09h10 – 09h20\nIntervalo', styles:{fillColor:[232,232,236], textColor:[90,90,98], fontStyle:'normal', halign:'center', valign:'middle', fontSize:6, cellPadding:0.5}},
+        {content:'10h00 – 10h10\nIntervalo', styles:{fillColor:[232,232,236], textColor:[90,90,98], fontStyle:'normal', halign:'center', valign:'middle', fontSize:6, cellPadding:0.5}},
         ...DIAS.map(()=>({content:'—', styles:{fillColor:[244,244,246], textColor:[154,154,163], halign:'center', valign:'middle', fontSize:7, cellPadding:0.5}}))
       ]);
     }
     // Após 5ª h/a — almoço + formatura vespertina
     if(slot.n===5){
       body.push([
-        {content:'11h50 – 13h50\nAlmoço', styles:{fillColor:[253,244,227], textColor:[90,72,20], fontStyle:'bold', halign:'center', valign:'middle', fontSize:5.5, cellPadding:0.6}},
-        ...DIAS.map(()=>({content:'13h50 – 14h00 · Formatura vespertina', styles:{fillColor:[253,244,227], textColor:[90,72,20], fontStyle:'normal', halign:'center', valign:'middle', fontSize:5.8, cellPadding:0.6}}))
+        {content:'11h50 – 13h20\nAlmoço', styles:{fillColor:[253,244,227], textColor:[90,72,20], fontStyle:'bold', halign:'center', valign:'middle', fontSize:5.5, cellPadding:0.6}},
+        ...DIAS.map(()=>({content:'13h20 – 13h30 · Formatura vespertina', styles:{fillColor:[253,244,227], textColor:[90,72,20], fontStyle:'normal', halign:'center', valign:'middle', fontSize:5.8, cellPadding:0.6}}))
       ]);
     }
-    // Após 7ª h/a — intervalo (15h40-16h00)
-    if(slot.n===7){
+    // Após 8ª h/a — intervalo (16h00-16h10)
+    if(slot.n===8){
       body.push([
-        {content:'15h40 – 15h50\nIntervalo', styles:{fillColor:[232,232,236], textColor:[90,90,98], fontStyle:'normal', halign:'center', valign:'middle', fontSize:6, cellPadding:0.5}},
+        {content:'16h00 – 16h10\nIntervalo', styles:{fillColor:[232,232,236], textColor:[90,90,98], fontStyle:'normal', halign:'center', valign:'middle', fontSize:6, cellPadding:0.5}},
         ...DIAS.map(()=>({content:'—', styles:{fillColor:[244,244,246], textColor:[154,154,163], halign:'center', valign:'middle', fontSize:7, cellPadding:0.5}}))
       ]);
     }
