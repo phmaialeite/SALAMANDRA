@@ -2052,6 +2052,7 @@ function activityInfo(code){
 
 // Horário-base OFICIAL — Plano de Trabalho item 6.3 (10 h/a regulares + 2 noturnas eventuais)
 const QTS_SLOTS = [
+  {n:15, h:"06h00 – 06h50", ord:"", sessao:"manha"},
   {n:1,  h:"07h30 – 08h20", ord:"1ª", sessao:"manha"},
   {n:2,  h:"08h20 – 09h10", ord:"2ª", sessao:"manha"},
   {n:3,  h:"09h10 – 10h00", ord:"3ª", sessao:"manha"},
@@ -2073,7 +2074,6 @@ const QTS_SLOTS_NOITE = [
 const FORMATURAS = [
   {h:"07h10 – 07h30", lbl:"Formatura matinal / revista"},
   {h:"13h20 – 13h30", lbl:"Formatura vespertina"},
-  {h:"06h00 – 06h50", lbl:"Treinamento Físico Militar"},
 ];
 // Intervalos OFICIAIS (Regimento — Das Atividades Diárias, item 14)
 const INTERVALOS = [
@@ -2149,11 +2149,10 @@ function getQTS(n){
   if(!QTS_CACHE[n]){
     const blocos=[];
     for(let dia=1; dia<=DIAS.length; dia++){
-      for(let i=0; i<10; i++){
-        // QTS inicia EM BRANCO (todos os tempos livres). A Coordenação lança cada
-        // tempo conforme o planejamento real do curso. (O modelo ilustrativo
-        // antigo — CICLOS/templateForWeek — permanece no código, porém desativado.)
-        const slot=i+1; const code = "LIVRE"; const a=activityInfo(code);
+      for(const sl of QTS_SLOTS){
+        // QTS inicia EM BRANCO (todos os tempos livres, inclusive o das 06h). A
+        // Coordenação lança cada tempo conforme o planejamento real do curso.
+        const slot=sl.n; const code = "LIVRE"; const a=activityInfo(code);
         blocos.push({dia, slot, code, disc:a.nome, instr:a.instr, local:a.local, uniforme:a.uniforme});
       }
     }
@@ -4049,18 +4048,24 @@ function viewQTS(){
     grid+=`<div class="qts-dh"${cmp?' style="background:#e4efe0"':''}>${DIAS_ABR[i]}<span>${i<5? d+'-feira' : d}</span>${cmp?`<em style="display:block;font-style:normal;font-size:10px;color:#2f5233;font-weight:700;margin-top:2px">🌿 ${cmp.ha} h/a</em>`:''}</div>`;
   });
 
-  // Treinamento Físico Militar (06h00-06h50) — marco do dia
-  grid += `<div class="qts-marker">${FORMATURAS[2].h}<span>${FORMATURAS[2].lbl}</span></div>`;
-  for(let i=0;i<DIAS.length;i++) grid += `<div class="qts-marker-cell">TFM</div>`;
+  // Tempo das 06h00 – 06h50 (editável) — antes da formatura matinal
+  {
+    const s = QTS_SLOTS[0];
+    grid += `<div class="qts-slot s-manha">${s.h}<span>${s.ord?s.ord+' h/a':'h/a'}</span></div>`;
+    DIAS.forEach((_,d)=>{
+      const b = qts.blocos.find(b=>b.dia===d+1 && b.slot===s.n) || {dia:d+1, slot:s.n, code:'LIVRE'};
+      grid += qtsCell(b, canEdit);
+    });
+  }
 
   // Linha de Formatura matinal (07h10-07h30)
   grid += `<div class="qts-marker">${FORMATURAS[0].h}<span>${FORMATURAS[0].lbl}</span></div>`;
   for(let i=0;i<DIAS.length;i++) grid += `<div class="qts-marker-cell">⚐ Formatura</div>`;
 
   // Slots da manhã (1ª a 5ª h/a)
-  for(let i=0; i<5; i++){
+  for(let i=1; i<6; i++){
     const s = QTS_SLOTS[i];
-    grid += `<div class="qts-slot s-manha">${s.h}<span>${s.ord} h/a</span></div>`;
+    grid += `<div class="qts-slot s-manha">${s.h}<span>${s.ord?s.ord+' h/a':'h/a'}</span></div>`;
     DIAS.forEach((_,d)=>{
       const b = qts.blocos.find(b=>b.dia===d+1 && b.slot===s.n);
       grid += qtsCell(b, canEdit);
@@ -4077,9 +4082,9 @@ function viewQTS(){
   for(let j=0;j<DIAS.length;j++) grid += `<div class="qts-interval-cell big">${FORMATURAS[1].lbl} ${FORMATURAS[1].h}</div>`;
 
   // Slots da tarde (6ª a 10ª h/a)
-  for(let i=5; i<10; i++){
+  for(let i=6; i<11; i++){
     const s = QTS_SLOTS[i];
-    grid += `<div class="qts-slot s-tarde">${s.h}<span>${s.ord} h/a</span></div>`;
+    grid += `<div class="qts-slot s-tarde">${s.h}<span>${s.ord?s.ord+' h/a':'h/a'}</span></div>`;
     DIAS.forEach((_,d)=>{
       const b = qts.blocos.find(b=>b.dia===d+1 && b.slot===s.n);
       grid += qtsCell(b, canEdit);
@@ -4303,12 +4308,12 @@ function editBloco(dia, slot){
   document.getElementById('eb-instr').value = b.instr;
   const allSlots = [...QTS_SLOTS, ...QTS_SLOTS_NOITE];
   const slotInfo = allSlots.find(s=>s.n===slot);
-  document.getElementById('eb-pos').textContent = `Semana ${curWeek} · ${DIAS[dia-1]}, ${slotInfo.ord} h/a (${slotInfo.h})`;
+  document.getElementById('eb-pos').textContent = `Semana ${curWeek} · ${DIAS[dia-1]}, ${slotInfo.ord?slotInfo.ord+' h/a':'h/a'} (${slotInfo.h})`;
   // checkboxes de lançamento múltiplo (dia atual e tempo atual pré-marcados)
   const _chk = "display:inline-flex;align-items:center;gap:4px;font-size:12px;background:#f4f4f6;border:1px solid #e2e2e6;border-radius:6px;padding:3px 8px;cursor:pointer";
   document.getElementById('eb-dias').innerHTML = DIAS.map((nm,i)=>`<label style="${_chk}"><input type="checkbox" class="eb-dia" value="${i+1}" ${i+1===dia?'checked':''}> ${DIAS_ABR[i]}</label>`).join('');
   const slotsArr = [...QTS_SLOTS, ...(qts.noturnoAtivo?QTS_SLOTS_NOITE:[])];
-  document.getElementById('eb-slots').innerHTML = slotsArr.map(s=>`<label style="${_chk}" title="${s.h}"><input type="checkbox" class="eb-slot" value="${s.n}" ${s.n===slot?'checked':''}> ${s.ord}</label>`).join('');
+  document.getElementById('eb-slots').innerHTML = slotsArr.map(s=>`<label style="${_chk}" title="${s.h}"><input type="checkbox" class="eb-slot" value="${s.n}" ${s.n===slot?'checked':''}> ${s.ord||s.h.split(' ')[0]}</label>`).join('');
   // avaliação: disciplina avaliada + tipo (teórica → Coordenação / prática → disciplina)
   document.getElementById('eb-aval-disc').innerHTML = MATRIZ.map(d=>`<option value="${d.cod}" ${d.cod===b.discRef?'selected':''}>${d.cod} — ${d.nome}</option>`).join('');
   const tipoAtual = b.avalTipo || 'teorica';
@@ -4617,21 +4622,12 @@ function pdfQTSGrid(doc, w, qts){
   const slots = qts.noturnoAtivo ? [...QTS_SLOTS, ...QTS_SLOTS_NOITE] : QTS_SLOTS;
   const body = [];
 
-  // Linha: Treinamento Físico Militar (06h00-06h50)
-  body.push([
-    {content:'06h00 – 06h50\nTFM', styles:{fillColor:[26,31,42], textColor:[232,232,236], fontStyle:'bold', halign:'center', valign:'middle', fontSize:5.5, cellPadding:0.6}},
-    ...DIAS.map(()=>({content:'Treinamento Físico Militar', styles:{fillColor:[233,238,242], textColor:[40,52,66], fontStyle:'normal', halign:'center', valign:'middle', fontSize:6, cellPadding:0.6}}))
-  ]);
-  // Linha: Formatura matinal
-  body.push([
-    {content:'07h10 – 07h30\nFormatura', styles:{fillColor:[191,39,39], textColor:[255,255,255], fontStyle:'bold', halign:'center', valign:'middle', fontSize:5.5, cellPadding:0.6}},
-    ...DIAS.map(()=>({content:'Formatura matinal / revista', styles:{fillColor:[253,231,231], textColor:[124,24,24], fontStyle:'bold', halign:'center', valign:'middle', fontSize:6, cellPadding:0.6}}))
-  ]);
+  // (O tempo das 06h e a formatura matinal entram dentro do laço, em ordem cronológica.)
 
   slots.forEach((slot, idx)=>{
     const isNoite = slot.sessao==='noite';
     const row = [
-      {content:`${slot.h}\n${slot.ord} h/a`, styles:{fillColor: isNoite?[26,31,42]:(slot.sessao==='manha'?[246,248,250]:[251,246,240]), textColor:isNoite?[232,232,236]:[58,58,58], fontStyle:'bold', halign:'center', valign:'middle', fontSize:6, cellPadding:0.6}},
+      {content:`${slot.h}\n${slot.ord?slot.ord+' h/a':'h/a'}`, styles:{fillColor: isNoite?[26,31,42]:(slot.sessao==='manha'?[246,248,250]:[251,246,240]), textColor:isNoite?[232,232,236]:[58,58,58], fontStyle:'bold', halign:'center', valign:'middle', fontSize:6, cellPadding:0.6}},
       ...DIAS.map((_,i)=>{
         const b = qts.blocos.find(b=>b.dia===i+1 && b.slot===slot.n);
         if(!b || b.code==='LIVRE') return {content:'—', styles:{textColor:[160,160,170], halign:'center', valign:'middle', fontSize:7}};
@@ -4653,6 +4649,13 @@ function pdfQTSGrid(doc, w, qts){
       })
     ];
     body.push(row);
+    // Após o tempo das 06h — formatura matinal (07h10-07h30)
+    if(slot.n===15){
+      body.push([
+        {content:'07h10 – 07h30\nFormatura', styles:{fillColor:[191,39,39], textColor:[255,255,255], fontStyle:'bold', halign:'center', valign:'middle', fontSize:5.5, cellPadding:0.6}},
+        ...DIAS.map(()=>({content:'Formatura matinal / revista', styles:{fillColor:[253,231,231], textColor:[124,24,24], fontStyle:'bold', halign:'center', valign:'middle', fontSize:6, cellPadding:0.6}}))
+      ]);
+    }
     // Após 3ª h/a — intervalo (10h00-10h10)
     if(slot.n===3){
       body.push([
