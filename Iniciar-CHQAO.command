@@ -27,6 +27,17 @@ if [ ! -d "$PGLITE_DIR" ]; then
   node --no-warnings src/seed.js || { echo "Falha ao preparar a base."; read -p "Enter para sair..."; exit 1; }
 fi
 
+# -------------------------------------------------------------------------
+# BACKUP DE SEGURANCA: copia a base ANTES de iniciar (mantem as 5 ultimas).
+# Se a base corromper, use o "Restaurar-base-SALAMANDRA" para voltar a ultima integra.
+# -------------------------------------------------------------------------
+if [ -d "$PGLITE_DIR" ] && [ -f "$PGLITE_DIR/PG_VERSION" ]; then
+  BK="$HOME/.salamandra/backups"; mkdir -p "$BK"
+  rm -rf "$BK/base-5"
+  for i in 4 3 2 1; do [ -d "$BK/base-$i" ] && mv "$BK/base-$i" "$BK/base-$((i+1))"; done
+  cp -R "$PGLITE_DIR" "$BK/base-1" 2>/dev/null && echo "Backup de seguranca da base atualizado (5 ultimas em ~/.salamandra/backups)."
+fi
+
 echo "================================================================"
 echo " Plataforma CHQAO BM 2026 - SALAMANDRA iniciando..."
 echo " Banco local: $PGLITE_DIR"

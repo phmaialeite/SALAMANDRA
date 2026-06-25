@@ -34,6 +34,14 @@ if [ ! -d "$PGLITE_DIR" ]; then
   node --no-warnings src/seed.js || { echo "Falha ao preparar a base."; read -r -p "Enter para sair..."; exit 1; }
 fi
 
+# Backup de seguranca: copia a base ANTES de iniciar (mantem as 5 ultimas).
+if [ -d "$PGLITE_DIR" ] && [ -f "$PGLITE_DIR/PG_VERSION" ]; then
+  BK="$HOME/.salamandra/backups"; mkdir -p "$BK"
+  rm -rf "$BK/base-5"
+  for i in 4 3 2 1; do [ -d "$BK/base-$i" ] && mv "$BK/base-$i" "$BK/base-$((i+1))"; done
+  cp -R "$PGLITE_DIR" "$BK/base-1" 2>/dev/null && echo "Backup de seguranca da base atualizado (5 ultimas em ~/.salamandra/backups)."
+fi
+
 echo "================================================================"
 echo " SALAMANDRA iniciando..."
 echo " Abra no navegador:  http://127.0.0.1:8088"

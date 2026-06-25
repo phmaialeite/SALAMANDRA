@@ -29,6 +29,19 @@ if not exist "%PGLITE_DIR%" (
   if errorlevel 1 ( echo Falha ao preparar a base. & pause & exit /b 1 )
 )
 
+REM Backup de seguranca: copia a base ANTES de iniciar (mantem as 5 ultimas).
+set "BK=%LOCALAPPDATA%\SALAMANDRA\backups"
+if exist "%PGLITE_DIR%\PG_VERSION" (
+  if not exist "%BK%" mkdir "%BK%"
+  if exist "%BK%\base-5" rmdir /s /q "%BK%\base-5"
+  if exist "%BK%\base-4" move "%BK%\base-4" "%BK%\base-5" >nul
+  if exist "%BK%\base-3" move "%BK%\base-3" "%BK%\base-4" >nul
+  if exist "%BK%\base-2" move "%BK%\base-2" "%BK%\base-3" >nul
+  if exist "%BK%\base-1" move "%BK%\base-1" "%BK%\base-2" >nul
+  robocopy "%PGLITE_DIR%" "%BK%\base-1" /E /NFL /NDL /NJH /NJS /NC /NS /NP >nul
+  echo Backup de seguranca da base atualizado ^(5 ultimas em %BK%^).
+)
+
 echo ================================================================
 echo  Plataforma CHQAO BM 2026 - SALAMANDRA iniciando...
 echo  Banco local: %PGLITE_DIR%
