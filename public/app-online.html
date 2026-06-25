@@ -1233,6 +1233,9 @@
       <label class="fld"><span class="l">Uniforme</span>
         <select id="eb-uniforme"></select>
       </label>
+      <label class="fld"><span class="l">Observações (saem no PDF)</span>
+        <textarea id="eb-obs" rows="2" style="width:100%;font-family:'Public Sans';font-size:13px;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:#fff;resize:vertical;outline:none" placeholder="Ex.: descreva a atividade quando for 'À disposição da Coordenação', detalhe do evento, etc."></textarea>
+      </label>
       <div class="note">Os campos vêm pré-preenchidos com os valores padrão da atividade — você pode ajustar conforme a necessidade da semana.</div>
       <div class="fld" style="margin-top:6px;border-top:1px dashed #d8d8de;padding-top:10px">
         <span class="l">Lançamento múltiplo (aplicar a vários dias/tempos)</span>
@@ -1936,7 +1939,7 @@ const MATRIZ = [
   {cod:"CABM", ord:36, nucleo:"FTPSP",              nome:"Ciências Aplicadas à Atividade Bombeiro Militar",                ch:30,  peso:3, natureza:"Teórica"},
   {cod:"FPI",  ord:37, nucleo:"FTPSP",              nome:"Fundamentos da Perícia de Incêndios",                            ch:40,  peso:3, natureza:"Teórico-prática"},
   {cod:"ES",   ord:38, nucleo:"Estágios",           nome:"Estágio Supervisionado",                                         ch:115, peso:null, natureza:"Estágio"},
-  {cod:"ACP",  ord:39, nucleo:"Estágios",           nome:"Atividades Complementares",                                      ch:115, peso:null, natureza:"Complementar"},
+  {cod:"ACP",  ord:39, nucleo:"Estágios",           nome:"À disposição da Coordenação",                                    ch:115, peso:null, natureza:"Complementar"},
 ];
 
 // Dados detalhados dos PUDs (ementa, objetivo, unidades didáticas, regra de avaliação)
@@ -1952,6 +1955,7 @@ const QTS_EVENTOS = {
   REV:  {nome:"Revisão / Encerramento Semanal", local:"Sala 1",              uniforme:"4º A — Operacional", cor:"sof"},
   EIO:  {nome:"Estudo Individual Orientado",    local:"Sala 1",              uniforme:"3º A — Instrução",  cor:"sof"},
   REU:  {nome:"Reunião Pedagógica",             local:"Sala 1",              uniforme:"4º A — Operacional", cor:"sof"},
+  ACOMP:{nome:"Atividade Complementar",         local:"Sala 1",              uniforme:"4º A — Operacional", cor:"sof"},
   LIVRE:{nome:"Bloco livre",                    local:"—",                   uniforme:"—",                  cor:"livre"},
   FERIADO:{nome:"Feriado",                      local:"—",                   uniforme:"—",                  cor:"fer"},
   PFAC:{nome:"Ponto Facultativo",               local:"—",                   uniforme:"—",                  cor:"pfac"},
@@ -2156,11 +2160,12 @@ function getQTS(n){
         blocos.push({dia, slot, code, disc:a.nome, instr:a.instr, local:a.local, uniforme:a.uniforme});
       }
     }
-    QTS_CACHE[n] = {blocos, obs:"", aprovado:false, aprovadoPor:"", aprovadoEm:"", noturnoAtivo:false, campo:{}};
+    QTS_CACHE[n] = {blocos, obs:"", aprovado:false, aprovadoPor:"", aprovadoEm:"", noturnoAtivo:false, noturnoQtd:0, campo:{}};
   }
   return QTS_CACHE[n];
 }
 let curWeek = 1;
+let _saldoQTS = null;  // saldo de horas por disciplina, recalculado a cada render do QTS (p/ contador na célula)
 
 /* ============================ ASSISTENTE DE QTS ============================ */
 /* Painel estratégico que assiste a Direção e a Coordenação na confecção do QTS:
@@ -2188,9 +2193,12 @@ function calcSaldoDisciplinas(){
     q.blocos.forEach(b => {
       // conta todos os tempos lançados (10 regulares + estendidos 11ª–14ª)
       if(saldo[b.code]){ saldo[b.code].alocada++; saldo[b.code].semanas.add(w.n); }
-      // avaliação PRÁTICA conta para a disciplina avaliada (a teórica vai p/ a Coordenação)
-      else if((b.code==='AV'||b.code==='VR'||b.code==='EF') && b.avalTipo==='pratica' && b.discRef && saldo[b.discRef]){
-        saldo[b.discRef].alocada++; saldo[b.discRef].semanas.add(w.n);
+      // "Atividade Complementar" e "Reunião Pedagógica" somam na rubrica "À disposição da Coordenação" (ACP)
+      else if((b.code==='ACOMP'||b.code==='REU') && saldo['ACP']){ saldo['ACP'].alocada++; saldo['ACP'].semanas.add(w.n); }
+      else if(b.code==='AV'||b.code==='VR'||b.code==='EF'){
+        // avaliação PRÁTICA conta para a disciplina avaliada; TEÓRICA vai para "À disposição da Coordenação"
+        if(b.avalTipo==='pratica' && b.discRef && saldo[b.discRef]){ saldo[b.discRef].alocada++; saldo[b.discRef].semanas.add(w.n); }
+        else if(saldo['ACP']){ saldo['ACP'].alocada++; saldo['ACP'].semanas.add(w.n); }
       }
     });
     // dias de campo/selva: credita as h/a informadas (ex.: 24) à disciplina vinculada
@@ -2229,7 +2237,7 @@ function calcCargaInstrutores(weekN){
   const inst = {};
   q.blocos.forEach(b => {
     if(b.code === 'LIVRE') return;
-    if(b.slot > 10 && !q.noturnoAtivo) return;
+    if(b.slot > 10 && b.slot > 10 + nQt(q)) return;
     if(!b.instr || b.instr === '—') return;
     const a = activityInfo(b.code);
     if(!inst[b.instr]) inst[b.instr] = {nome:b.instr, ha:0, disc:new Set(), dias:new Set(), evento:a.isEvento};
@@ -2249,7 +2257,7 @@ function calcUsoLocais(weekN){
   const locs = {};
   q.blocos.forEach(b => {
     if(b.code === 'LIVRE') return;
-    if(b.slot > 10 && !q.noturnoAtivo) return;
+    if(b.slot > 10 && b.slot > 10 + nQt(q)) return;
     if(!b.local || b.local === '—') return;
     if(!locs[b.local]) locs[b.local] = {nome:b.local, ha:0, disc:new Set()};
     locs[b.local].ha++; locs[b.local].disc.add(b.code);
@@ -2267,7 +2275,7 @@ function calcCargaPorDia(weekN){
   const dias = {};
   for(let d=1; d<=DIAS.length; d++) dias[d] = {total:0, operacional:0, fisico:0, teorico:0, evento:0};
   q.blocos.forEach(b => {
-    if(b.slot > 10 && !q.noturnoAtivo) return;
+    if(b.slot > 10 && b.slot > 10 + nQt(q)) return;
     if(b.code === 'LIVRE') return;
     const a = activityInfo(b.code);
     const dia = dias[b.dia]; dia.total++;
@@ -2393,13 +2401,22 @@ function renderTabSaldo(weekN){
       <td><span class="asst-pill st" style="background:${cor}20;color:${cor};border-color:${cor}50">${STATUS_LBL[s.status]}</span> ${ativPill}</td>
     </tr>`;
   }).join('');
-  const coord = calcHorasCoordenacao();
-  return `<table class="asst-table">
+  const disp = saldo['ACP'] || {alocada:0, ch_oficial:115};
+  const dispPct = disp.ch_oficial ? Math.min(100, disp.alocada/disp.ch_oficial*100) : 0;
+  const dispCor = disp.alocada>disp.ch_oficial ? '#bf2727' : (disp.alocada>=disp.ch_oficial ? '#2f7d4f' : '#9c7320');
+  // VC pendente: disciplina com a carga horária concluída mas sem VC lançada
+  const vcSet = new Set();
+  WEEKS.forEach(w=>{ const q=QTS_CACHE[w.n]; if(!q) return; q.blocos.forEach(b=>{ if(_isAval(b.code) && b.discRef) vcSet.add(b.discRef); }); });
+  const vcPend = Object.values(saldo).filter(s=> s.peso!==null && s.ch_oficial>0 && s.alocada>=s.ch_oficial && !vcSet.has(s.cod));
+  const bannerVC = vcPend.length ? `<div class="asst-note" style="background:#fdf4e3;border-color:#e9d4a8;color:#7c5b18"><b>⚠ VC em aberto:</b> ${vcPend.map(s=>s.cod).join(', ')} ${vcPend.length>1?'concluíram a carga horária mas ainda não têm':'concluiu a carga horária mas ainda não tem'} Verificação Corrente (VC) lançada — a disciplina só encerra após a VC.</div>` : '';
+  return `${bannerVC}<table class="asst-table">
     <thead><tr><th>Código</th><th>Disciplina</th><th style="text-align:right">CH alocada / oficial</th><th>Progressão</th><th>Status · Atividade</th></tr></thead>
     <tbody>${rows}</tbody>
   </table>
-  <div class="asst-note" style="background:#f5f2ec;border-color:#e6dcc8"><b>À disposição da Coordenação:</b> ${coord.total} h/a — ${coord.teoricas} de avaliações teóricas + ${coord.reunioes} de reuniões pedagógicas (não debitadas das disciplinas).</div>
-  <div class="asst-note">Considera apenas h/a regulares (1ª a 10ª). Disciplinas marcadas com ⚐ estão ocupando slots na semana ${weekN}. Avaliações práticas contam para a disciplina avaliada; teóricas e reuniões pedagógicas vão para “À disposição da Coordenação”. Estágio Supervisionado e Atividades Complementares têm CH apartada.</div>`;
+  <div class="asst-note" style="background:#f5f2ec;border-color:#e6dcc8"><b>À disposição da Coordenação:</b> ${disp.alocada} / ${disp.ch_oficial} h/a
+    <div class="bar" style="margin-top:4px"><div class="fill" style="width:${dispPct}%;background:${dispCor}"></div></div>
+    <div style="font-size:10.5px;color:#8a7a52;margin-top:3px">Inclui: lançamentos "À disposição da Coordenação" (ACP) + Atividade Complementar + reuniões pedagógicas + avaliações teóricas.</div></div>
+  <div class="asst-note">Disciplinas marcadas com ⚐ ocupam slots na semana ${weekN}. Avaliações práticas contam para a disciplina avaliada. Estágio Supervisionado tem CH apartada.</div>`;
 }
 
 function renderTabInstr(weekN){
@@ -3998,6 +4015,7 @@ function _gerarRelPDF(escopo, nivel, aid, assinantes){
 function viewQTS(){
   const w = WEEKS[curWeek-1]; const qts = getQTS(curWeek);
   const canEdit = ["direcao","coordenacao"].includes(role);
+  _saldoQTS = calcSaldoDisciplinas();  // p/ o contador de horas nas células
 
   const head = pageHead("QTS","Quadro de Trabalho Semanal alinhado ao Plano de Trabalho Retificado (item 6.3) e à matriz curricular consolidada de 1.638 h/a. Direção e Coordenação confeccionam; demais perfis consultam e baixam em PDF.","Quadro Semanal");
 
@@ -4007,8 +4025,15 @@ function viewQTS(){
       ${WEEKS.map(x=>`<option value="${x.n}" ${x.n===curWeek?'selected':''}>Semana ${x.n} — ${fmtData(x.inicio)} a ${fmtData(x.fim)} (${MESES[x.mes-1]})</option>`).join('')}
     </select>
     <button class="btn sm" onclick="navWeek(1)" ${curWeek===26?'disabled':''}>Próxima →</button>
-    <label style="margin-left:auto;display:inline-flex;align-items:center;gap:6px;font-size:12px;color:#6a6a72;cursor:pointer">
-      <input type="checkbox" ${qts.noturnoAtivo?'checked':''} onchange="toggleNoturno()" style="cursor:pointer"> Instrução estendida / noturna (até 14ª h/a)
+    <label style="margin-left:auto;display:inline-flex;align-items:center;gap:6px;font-size:12px;color:#6a6a72">
+      Tempos noturnos:
+      <select onchange="setNoturno(this.value)" ${canEdit?'':'disabled'} style="cursor:pointer;font-size:12px;padding:2px 6px;border:1px solid var(--line);border-radius:6px">
+        <option value="0" ${nQt(qts)===0?'selected':''}>nenhum</option>
+        <option value="1" ${nQt(qts)===1?'selected':''}>1 (11ª)</option>
+        <option value="2" ${nQt(qts)===2?'selected':''}>2 (11ª–12ª)</option>
+        <option value="3" ${nQt(qts)===3?'selected':''}>3 (11ª–13ª)</option>
+        <option value="4" ${nQt(qts)===4?'selected':''}>4 (11ª–14ª)</option>
+      </select>
     </label>
   </div>`;
 
@@ -4096,11 +4121,12 @@ function viewQTS(){
     }
   }
 
-  // Slots da noite/estendidos (11ª a 14ª h/a) — opcionais
-  if(qts.noturnoAtivo){
+  // Slots da noite/estendidos (11ª a 14ª h/a) — opcionais (1 a 4 tempos)
+  const _nq = nQt(qts);
+  if(_nq>0){
     grid += `<div class="qts-interval">${INTERVALOS[3].h}<span>${INTERVALOS[3].lbl}</span></div>`;
     for(let j=0;j<DIAS.length;j++) grid += `<div class="qts-interval-cell">—</div>`;
-    for(let i=0; i<QTS_SLOTS_NOITE.length; i++){
+    for(let i=0; i<_nq; i++){
       const s = QTS_SLOTS_NOITE[i];
       grid += `<div class="qts-slot s-noite">${s.h}<span>${s.ord} h/a · noite</span></div>`;
       DIAS.forEach((_,d)=>{
@@ -4114,7 +4140,7 @@ function viewQTS(){
     }
   }
 
-  const gridWrap = `<div class="qts-wrap"><div class="qts-grid ${qts.noturnoAtivo?'with-noite':''}">${grid}</div></div>`;
+  const gridWrap = `<div class="qts-wrap"><div class="qts-grid ${_nq>0?'with-noite':''}">${grid}</div></div>`;
 
   // Resumo da semana
   const totH = qts.blocos.filter(b=>b.slot<=10 && QTS_EVENTOS[b.code]===undefined).length;
@@ -4123,7 +4149,7 @@ function viewQTS(){
     <div><span>h/a regulares (manhã+tarde)</span><b>50</b></div>
     <div><span>de instrução em disciplinas</span><b>${totH}</b></div>
     <div><span>de eventos/avaliação/revisão</span><b>${totEv}</b></div>
-    <div><span>execução estendida</span><b>${qts.noturnoAtivo?'sim · 11ª-14ª h/a':'não'}</b></div>
+    <div><span>execução estendida</span><b>${_nq>0?_nq+' tempo(s) noturno(s)':'não'}</b></div>
   </div>`;
 
   const obsBlock = `<div class="card"><div class="ch"><span class="h">Observações da semana</span>
@@ -4221,6 +4247,12 @@ function qtsCell(b, canEdit){
   const a = activityInfo(b.code);
   const handler = canEdit?`onclick="editBloco(${b.dia},${b.slot})"`:'';
   const titulo = canEdit?`title="Clique para editar"`:`title="${b.disc}"`;
+  // Botão de limpar (deixar livre) direto na célula
+  const limpar = canEdit ? `<button title="Limpar (deixar livre)" onclick="event.stopPropagation();limparBloco(${b.dia},${b.slot})" style="position:absolute;top:1px;right:2px;width:16px;height:16px;line-height:14px;border:none;background:rgba(255,255,255,.7);color:#a23;border-radius:3px;font-size:10px;cursor:pointer;padding:0;z-index:2">✕</button>` : '';
+  // Contador de horas (usadas/total) da disciplina — "Atividade Complementar" soma na rubrica À disposição (ACP)
+  const _ccCode = (b.code==='ACOMP') ? 'ACP' : b.code;
+  const _sal = (typeof _saldoQTS!=='undefined' && _saldoQTS) ? _saldoQTS[_ccCode] : null;
+  const cont = (_sal && !_isAval(b.code)) ? ` <span style="font-weight:600;color:#555;font-size:10px">${_sal.alocada}/${_sal.ch_oficial}</span>` : '';
   if(b.code==='LIVRE'){
     return `<div class="qts-cell c-livre" ${handler} ${titulo}>
       <div class="qts-cc">LIVRE</div></div>`;
@@ -4229,12 +4261,12 @@ function qtsCell(b, canEdit){
     const lbl = b.code==='FERIADO' ? 'FERIADO' : 'PONTO FACULTATIVO';
     const bg  = b.code==='FERIADO' ? '#f0dede' : '#e7e1f0';
     const fg  = b.code==='FERIADO' ? '#7a1f2a' : '#4a3a6a';
-    return `<div class="qts-cell" style="background:${bg};color:${fg};display:flex;align-items:center;justify-content:center;text-align:center;font-weight:700;letter-spacing:.03em" ${handler} ${titulo}>
+    return `<div class="qts-cell" style="position:relative;background:${bg};color:${fg};display:flex;align-items:center;justify-content:center;text-align:center;font-weight:700;letter-spacing:.03em" ${handler} ${titulo}>${limpar}
       <div>${lbl}</div></div>`;
   }
   if(b.code==='CAMPO'){
     const cd = (b.disc||'Selva / Imersão'); const cdCurto = cd.length>26?cd.slice(0,24)+'…':cd;
-    return `<div class="qts-cell" style="background:#e4efe0;color:#2f5233;display:flex;align-items:center;justify-content:center;text-align:center;font-weight:700;border-left:3px solid #4a7a3a" ${handler} ${titulo}>
+    return `<div class="qts-cell" style="position:relative;background:#e4efe0;color:#2f5233;display:flex;align-items:center;justify-content:center;text-align:center;font-weight:700;border-left:3px solid #4a7a3a" ${handler} ${titulo}>${limpar}
       <div>🌿 CAMPO<br><span style="font-weight:500;font-size:10.5px">${cdCurto}</span></div></div>`;
   }
   let _cd = b.disc;
@@ -4242,15 +4274,25 @@ function qtsCell(b, canEdit){
   const nomeCurto = _cd.length>34 ? _cd.slice(0,32)+'…' : _cd;
   const instrCurto = b.instr.length>22 ? b.instr.slice(0,21)+'…' : b.instr;
   const localCurto = b.local.length>20 ? b.local.slice(0,19)+'…' : b.local;
-  return `<div class="qts-cell c-${a.cor}" ${handler} ${titulo}>
-    <div class="qts-cc">${b.code}</div>
+  const obsCurta = (b.obs||'').trim();
+  return `<div class="qts-cell c-${a.cor}" style="position:relative" ${handler} ${titulo}>${limpar}
+    <div class="qts-cc">${b.code}${cont}</div>
     <div class="qts-cd">${nomeCurto}</div>
     <div class="qts-cm">${instrCurto} · ${localCurto}</div>
-    <div class="qts-cu">${b.uniforme.split('—')[0].trim()}</div>
+    <div class="qts-cu">${b.uniforme.split('—')[0].trim()}${obsCurta?` · <i style="opacity:.8">${obsCurta.length>22?obsCurta.slice(0,21)+'…':obsCurta}</i>`:''}</div>
   </div>`;
 }
 
 function navWeek(d){curWeek = Math.max(1, Math.min(26, curWeek+d)); render();}
+function limparBloco(dia, slot){
+  if(!["direcao","coordenacao"].includes(role)){ toast("Apenas Direção/Coordenação edita o QTS.","warn"); return; }
+  const qts=getQTS(curWeek);
+  let b=qts.blocos.find(x=>x.dia===dia && x.slot===slot);
+  if(!b){ b={dia,slot}; qts.blocos.push(b); }
+  b.code="LIVRE"; b.disc="Bloco livre"; b.instr="—"; b.local="—"; b.uniforme="—"; b.discRef=null; b.avalTipo=null; b.obs="";
+  if(qts.aprovado){ qts.aprovado=false; qts.aprovadoPor=""; qts.aprovadoEm=""; }
+  _persisteQTS(); render();
+}
 function limparSemanaQTS(){
   if(!["direcao","coordenacao"].includes(role)){ toast("Apenas Direção/Coordenação edita o QTS.","warn"); return; }
   if(!confirm(`Limpar TODOS os lançamentos do QTS da Semana ${curWeek}?\n\nOs tempos voltam a ficar livres e as atividades de campo do dia são removidas. Esta semana fica pronta para montagem do zero.`)) return;
@@ -4269,10 +4311,15 @@ function reiniciarTudo(){
     .then(j=>{ if(j&&j.ok){ toast("Dados reiniciados. Recarregando...","ok"); setTimeout(()=>location.reload(), 900); } else { toast("Falha ao reiniciar: "+((j&&j.erro)||"erro"),"warn"); } })
     .catch(()=>toast("Falha ao reiniciar (o servidor está rodando?).","warn"));
 }
-function toggleNoturno(){
+// Quantidade de tempos noturnos ativos (0 a 4). Compatível com o antigo noturnoAtivo (bool).
+function nQt(q){ return (q && q.noturnoQtd!=null) ? q.noturnoQtd : ((q && q.noturnoAtivo) ? 4 : 0); }
+function setNoturno(n){
+  if(!["direcao","coordenacao"].includes(role)){ toast("Apenas Direção/Coordenação edita o QTS.","warn"); return; }
   const qts = getQTS(curWeek);
-  qts.noturnoAtivo = !qts.noturnoAtivo;
-  render();
+  qts.noturnoQtd = Math.max(0, Math.min(4, parseInt(n,10)||0));
+  qts.noturnoAtivo = qts.noturnoQtd>0;
+  if(qts.aprovado){ qts.aprovado=false; qts.aprovadoPor=""; qts.aprovadoEm=""; }
+  _persisteQTS(); render();
 }
 
 let editTarget = null;
@@ -4289,7 +4336,10 @@ function editBloco(dia, slot){
   Object.keys(grupos).forEach(g=>{
     opts += `<optgroup label="${g}">`;
     grupos[g].forEach(d=>{
-      opts += `<option value="${d.cod}" ${d.cod===b.code?'selected':''}>${d.cod} — ${d.nome}</option>`;
+      const sal = _saldoQTS && _saldoQTS[d.cod];
+      const full = sal && sal.alocada >= sal.ch_oficial && d.cod!==b.code;  // já concluída → bloqueia novo lançamento
+      const cnt = sal ? ` (${sal.alocada}/${sal.ch_oficial})` : '';
+      opts += `<option value="${d.cod}" ${d.cod===b.code?'selected':''} ${full?'disabled':''}>${d.cod} — ${d.nome}${cnt}${full?' ✓ concluída':''}</option>`;
     });
     opts += `</optgroup>`;
   });
@@ -4306,13 +4356,14 @@ function editBloco(dia, slot){
   const selU = document.getElementById('eb-uniforme');
   selU.innerHTML = UNIFORMES.map(u=>`<option ${u===b.uniforme?'selected':''}>${u}</option>`).join('') + (UNIFORMES.includes(b.uniforme)?'':`<option selected>${b.uniforme}</option>`);
   document.getElementById('eb-instr').value = b.instr;
+  document.getElementById('eb-obs').value = b.obs || '';
   const allSlots = [...QTS_SLOTS, ...QTS_SLOTS_NOITE];
   const slotInfo = allSlots.find(s=>s.n===slot);
   document.getElementById('eb-pos').textContent = `Semana ${curWeek} · ${DIAS[dia-1]}, ${slotInfo.ord?slotInfo.ord+' h/a':'h/a'} (${slotInfo.h})`;
   // checkboxes de lançamento múltiplo (dia atual e tempo atual pré-marcados)
   const _chk = "display:inline-flex;align-items:center;gap:4px;font-size:12px;background:#f4f4f6;border:1px solid #e2e2e6;border-radius:6px;padding:3px 8px;cursor:pointer";
   document.getElementById('eb-dias').innerHTML = DIAS.map((nm,i)=>`<label style="${_chk}"><input type="checkbox" class="eb-dia" value="${i+1}" ${i+1===dia?'checked':''}> ${DIAS_ABR[i]}</label>`).join('');
-  const slotsArr = [...QTS_SLOTS, ...(qts.noturnoAtivo?QTS_SLOTS_NOITE:[])];
+  const slotsArr = [...QTS_SLOTS, ...QTS_SLOTS_NOITE.slice(0, nQt(qts))];
   document.getElementById('eb-slots').innerHTML = slotsArr.map(s=>`<label style="${_chk}" title="${s.h}"><input type="checkbox" class="eb-slot" value="${s.n}" ${s.n===slot?'checked':''}> ${s.ord||s.h.split(' ')[0]}</label>`).join('');
   // avaliação: disciplina avaliada + tipo (teórica → Coordenação / prática → disciplina)
   document.getElementById('eb-aval-disc').innerHTML = MATRIZ.map(d=>`<option value="${d.cod}" ${d.cod===b.discRef?'selected':''}>${d.cod} — ${d.nome}</option>`).join('');
@@ -4342,6 +4393,7 @@ function salvarBlocoMultiplo(){
   const instr = document.getElementById('eb-instr').value.trim() || a.instr;
   const local = document.getElementById('eb-local').value || a.local;
   const uniforme = document.getElementById('eb-uniforme').value || a.uniforme;
+  const obs = document.getElementById('eb-obs').value.trim();
   const _av = _lerCamposAval(code);
   const dias = [...document.querySelectorAll('.eb-dia:checked')].map(e=>parseInt(e.value,10));
   const slots = [...document.querySelectorAll('.eb-slot:checked')].map(e=>parseInt(e.value,10));
@@ -4350,7 +4402,7 @@ function salvarBlocoMultiplo(){
   for(const d of dias) for(const s of slots){
     let b = qts.blocos.find(x=>x.dia===d && x.slot===s);
     if(!b){ b={dia:d, slot:s}; qts.blocos.push(b); }
-    b.code=code; b.disc=a.nome; b.instr=instr; b.local=local; b.uniforme=uniforme; b.discRef=_av.discRef; b.avalTipo=_av.avalTipo; n++;
+    b.code=code; b.disc=a.nome; b.instr=instr; b.local=local; b.uniforme=uniforme; b.discRef=_av.discRef; b.avalTipo=_av.avalTipo; b.obs=obs; n++;
   }
   if(qts.aprovado){ qts.aprovado=false; qts.aprovadoPor=""; qts.aprovadoEm=""; }
   _persisteQTS();
@@ -4441,7 +4493,7 @@ function executarGeracaoQTS(){
     const tdias= tfmMode==='mwf'?[1,3,5]:[1,2,3,4,5,6,7];
     const a=activityInfo('TFM');
     for(let wk=S; wk<=26 && tfmRem>0; wk++){
-      const q=getQTS(wk); q.noturnoAtivo=true;
+      const q=getQTS(wk); q.noturnoQtd=4; q.noturnoAtivo=true;
       for(const dia of tdias){ if(tfmRem<=0) break;
         if(wk===FWK && dia===FDIA) continue;
         for(let slot=11; slot<=14 && tfmRem>0; slot++){
@@ -4455,7 +4507,7 @@ function executarGeracaoQTS(){
     }
   }
   // formatura 04/12 (editável)
-  const fq=getQTS(FWK); fq.noturnoAtivo=true;
+  const fq=getQTS(FWK); fq.noturnoQtd=4; fq.noturnoAtivo=true;
   const setB=(dia,slot,code,nome)=>{ let b=fq.blocos.find(x=>x.dia===dia&&x.slot===slot); if(!b){ b={dia,slot}; fq.blocos.push(b);} b.code=code; b.disc=nome; b.instr='Comando do Curso'; b.local='Pátio de Formaturas'; b.uniforme='6º — Passeio'; b.discRef=null; b.avalTipo=null; };
   setB(FDIA,4,'FORM','Formatura Militar de Encerramento (10h)');
   setB(FDIA,12,'FORM','Baile de Formatura (19h30)');
@@ -4497,6 +4549,7 @@ function saveBloco(){
   b.local = document.getElementById('eb-local').value || a.local;
   b.uniforme = document.getElementById('eb-uniforme').value || a.uniforme;
   const _av = _lerCamposAval(code); b.discRef = _av.discRef; b.avalTipo = _av.avalTipo;
+  b.obs = document.getElementById('eb-obs').value.trim();
   if(wasApproved){
     qts.aprovado=false; qts.aprovadoPor=""; qts.aprovadoEm="";
     toast('QTS reaberto — bloco alterado. Aprove novamente para validar.', 'warn');
@@ -4619,7 +4672,7 @@ function pdfQTSHeader(doc, w){
 function pdfQTSGrid(doc, w, qts){
   // Constrói corpo do PDF — agrupa slots consecutivos com mesma atividade no mesmo dia (visualmente reduz a tabela)
   // Mantém a fidelidade do horário-base oficial (10 linhas regulares + formaturas + intervalos)
-  const slots = qts.noturnoAtivo ? [...QTS_SLOTS, ...QTS_SLOTS_NOITE] : QTS_SLOTS;
+  const slots = nQt(qts)>0 ? [...QTS_SLOTS, ...QTS_SLOTS_NOITE.slice(0, nQt(qts))] : QTS_SLOTS;
   const body = [];
 
   // (O tempo das 06h e a formatura matinal entram dentro do laço, em ordem cronológica.)
@@ -4640,11 +4693,14 @@ function pdfQTSGrid(doc, w, qts){
           return {content:'CAMPO\nSelva / Imersão', styles:{fillColor:[228,239,224], textColor:[47,82,51], fontStyle:'bold', halign:'center', valign:'middle', fontSize:8}};
         }
         const a = activityInfo(b.code);
-        const nm  = a.nome.length>30 ? a.nome.slice(0,29)+'…' : a.nome;
+        let nmFull = a.nome;
+        if(_isAval(b.code) && b.discRef){ nmFull = `${a.nome} — ${b.discRef}${b.avalTipo==='pratica'?' (prática)':''}`; } // VC indica a disciplina
+        const nm  = nmFull.length>34 ? nmFull.slice(0,33)+'…' : nmFull;
         const ins = (b.instr||'').length>26 ? b.instr.slice(0,25)+'…' : b.instr;
         const loc = (b.local||'').length>24 ? b.local.slice(0,23)+'…' : b.local;
         const unif = (b.uniforme||'').split('—')[0].trim();
-        const lines = `${b.code} ${nm}\n${ins}\n${loc}${unif?' · '+unif:''}`;
+        const obs = (b.obs||'').trim();
+        const lines = `${b.code} ${nm}\n${ins}\n${loc}${unif?' · '+unif:''}${obs?`\nObs.: ${obs.length>44?obs.slice(0,43)+'…':obs}`:''}`;
         return {content:lines, _cor:a.cor, _code:b.code};
       })
     ];
@@ -4678,7 +4734,7 @@ function pdfQTSGrid(doc, w, qts){
       ]);
     }
     // Entre 10ª e 11ª — intervalo
-    if(slot.n===10 && qts.noturnoAtivo){
+    if(slot.n===10 && nQt(qts)>0){
       body.push([
         {content:'18h20 – 18h30\nIntervalo', styles:{fillColor:[232,232,236], textColor:[90,90,98], fontStyle:'normal', halign:'center', valign:'middle', fontSize:6, cellPadding:0.5}},
         ...DIAS.map(()=>({content:'—', styles:{fillColor:[244,244,246], textColor:[154,154,163], halign:'center', valign:'middle', fontSize:7, cellPadding:0.5}}))
