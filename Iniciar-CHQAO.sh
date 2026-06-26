@@ -44,8 +44,14 @@ fi
 
 echo "================================================================"
 echo " SALAMANDRA iniciando..."
-echo " Abra no navegador:  http://127.0.0.1:8088"
+echo " AGUARDE: o navegador abre SOZINHO quando o servidor estiver pronto."
 echo " Para ENCERRAR: feche este terminal ou pressione Ctrl+C."
 echo "================================================================"
-( sleep 2; xdg-open http://127.0.0.1:8088 >/dev/null 2>&1 || true ) &
+# Abre o navegador SOMENTE quando a porta 8088 responder (evita "conexao recusada").
+( for i in $(seq 1 60); do
+    if (exec 3<>/dev/tcp/127.0.0.1/8088) 2>/dev/null; then exec 3>&-; xdg-open http://127.0.0.1:8088 >/dev/null 2>&1 || true; break; fi
+    sleep 1
+  done ) &
 node --no-warnings src/server.js
+echo ""; echo "O SALAMANDRA foi encerrado, ou houve um erro acima."
+read -r -p "Enter para sair..."
