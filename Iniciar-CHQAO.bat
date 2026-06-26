@@ -45,8 +45,17 @@ if exist "%PGLITE_DIR%\PG_VERSION" (
 echo ================================================================
 echo  Plataforma CHQAO BM 2026 - SALAMANDRA iniciando...
 echo  Banco local: %PGLITE_DIR%
-echo  Abra no navegador:  http://127.0.0.1:8088
-echo  Para ENCERRAR: feche esta janela ou pressione Ctrl+C.
+echo  AGUARDE: o navegador abre SOZINHO quando o servidor estiver pronto.
+echo  (Pode levar alguns segundos por causa do backup de seguranca.)
+echo  Para ENCERRAR: feche esta janela.
 echo ================================================================
-start "" http://127.0.0.1:8088
+REM Abre o navegador SOMENTE quando o servidor responder (evita "conexao recusada").
+start "" /min powershell -NoProfile -Command "$u='http://127.0.0.1:8088'; for($i=0;$i -lt 60;$i++){ try{ [void](Invoke-WebRequest $u -UseBasicParsing -TimeoutSec 2); Start-Process $u; break }catch{ Start-Sleep -Milliseconds 800 } }"
 node --no-warnings src\server.js
+echo.
+echo ================================================================
+echo  O SALAMANDRA foi encerrado, ou houve um ERRO acima.
+echo  Se aparecer um erro em vermelho, tire uma FOTO desta tela.
+echo  Se a base corrompeu, rode o "Recriar-base-SALAMANDRA.bat".
+echo ================================================================
+pause
