@@ -102,6 +102,10 @@ async function enviaSpa(reply) {
   let html = await readFile(path.join(PUBLIC_DIR, "app-online.html"), "utf8");
   const tag = "<script>window.__API__='/api';window.__ONLINE__=true;</script>";
   html = html.includes("</head>") ? html.replace("</head>", tag + "\n</head>") : tag + html;
+  // Anti-cache: garante que o navegador sempre carregue a versão mais nova após uma atualização.
+  reply.header("Cache-Control", "no-store, no-cache, must-revalidate");
+  reply.header("Pragma", "no-cache");
+  reply.header("Expires", "0");
   return reply.type("text/html; charset=utf-8").send(html);
 }
 app.get("/", { config: { public: true } }, async (req, reply) => enviaSpa(reply));
