@@ -2167,6 +2167,32 @@ function getQTS(n){
 let curWeek = 1;
 let _saldoQTS = null;  // saldo de horas por disciplina, recalculado a cada render do QTS (p/ contador na célula)
 
+// ---- Número sequencial IMUTÁVEL por lançamento (histórico, não contador dinâmico) ----
+// Cada bloco guarda b.seq = a posição que ocupava no momento em que foi criado. Nunca muda.
+function _bucketSeq(code){ return code==='ACOMP' ? 'ACP' : code; }                 // Atividade Complementar entra na rubrica À disposição (ACP)
+function _temSeq(code){ return code!=='LIVRE' && (code==='ACOMP' || !!MATRIZ.find(d=>d.cod===code)); } // só disciplinas + à disposição (eventos/avaliações/livre não numeram)
+function _slotRank(n){ return n===15 ? 0 : n; }                                    // ordem cronológica (06h = 0, depois 1..14)
+function _maxSeqBucket(bucket, exclude){
+  let mx=0;
+  for(const w of WEEKS){ const q=QTS_CACHE[w.n]; if(!q) continue;
+    for(const b of q.blocos){ if(b!==exclude && _temSeq(b.code) && _bucketSeq(b.code)===bucket && typeof b.seq==='number' && b.seq>mx) mx=b.seq; } }
+  return mx;
+}
+function _proximoSeq(code, exclude){ return _maxSeqBucket(_bucketSeq(code), exclude) + 1; }
+// Atribui número sequencial aos lançamentos que ainda não têm (legado/auto), em ordem de leitura. Roda uma vez.
+function _migrarSeqQTS(){
+  ensureAllQTSCached();
+  const prox = {}; const faltantes = [];
+  for(const w of WEEKS){ const q=QTS_CACHE[w.n]; if(!q) continue;
+    for(const b of q.blocos){ if(!_temSeq(b.code)) continue; const bk=_bucketSeq(b.code);
+      if(typeof b.seq==='number'){ prox[bk]=Math.max(prox[bk]||0, b.seq); }
+      else faltantes.push({w:w.n, dia:b.dia, rank:_slotRank(b.slot), b, bk}); } }
+  if(!faltantes.length) return false;
+  faltantes.sort((x,y)=> x.w-y.w || x.dia-y.dia || x.rank-y.rank);
+  for(const f of faltantes){ prox[f.bk]=(prox[f.bk]||0)+1; f.b.seq=prox[f.bk]; }
+  return true;
+}
+
 /* ============================ ASSISTENTE DE QTS ============================ */
 /* Painel estratégico que assiste a Direção e a Coordenação na confecção do QTS:
    saldo das disciplinas, carga de instrutores, uso de recursos, alertas pedagógicos
@@ -2795,7 +2821,7 @@ const ESTADOS = [
 let role = "direcao";
 let view = "painel";
 
-const APP_VERSAO = "v1.0 · build 25/06/2026";
+const APP_VERSAO = "v1.0 · build 30/06/2026";
 const NAV = [
   {grp:"Operação do Curso", items:[
     {id:"painel", nm:"Painel", ic:icoGrid},
@@ -4015,7 +4041,10 @@ function _gerarRelPDF(escopo, nivel, aid, assinantes){
 function viewQTS(){
   const w = WEEKS[curWeek-1]; const qts = getQTS(curWeek);
   const canEdit = ["direcao","coordenacao"].includes(role);
-  _saldoQTS = calcSaldoDisciplinas();  // p/ o contador de horas nas células
+  // Garante o número sequencial nos lançamentos sem seq (legado/auto). Só QUEM EDITA grava a migração
+  // (evita "falha ao salvar" para alunos/instrutores); para os demais a numeração já aparece em tela.
+  if(_migrarSeqQTS() && canEdit) _persisteQTS();
+  _saldoQTS = calcSaldoDisciplinas();  // p/ o total (CH) exibido na célula e bloqueio/assistente
 
   const head = pageHead("QTS","Quadro de Trabalho Semanal alinhado ao Plano de Trabalho Retificado (item 6.3) e à matriz curricular consolidada de 1.638 h/a. Direção e Coordenação confeccionam; demais perfis consultam e baixam em PDF.","Quadro Semanal");
 
@@ -4252,7 +4281,8 @@ function qtsCell(b, canEdit){
   // Contador de horas (usadas/total) da disciplina — "Atividade Complementar" soma na rubrica À disposição (ACP)
   const _ccCode = (b.code==='ACOMP') ? 'ACP' : b.code;
   const _sal = (typeof _saldoQTS!=='undefined' && _saldoQTS) ? _saldoQTS[_ccCode] : null;
-  const cont = (_sal && !_isAval(b.code)) ? ` <span style="font-weight:600;color:#555;font-size:10px">${_sal.alocada}/${_sal.ch_oficial}</span>` : '';
+  // Número sequencial IMUTÁVEL do lançamento (ex.: 07/30) — guardado em b.seq na criação, nunca recalculado.
+  const cont = (typeof b.seq==='number' && _sal && !_isAval(b.code)) ? ` <span style="font-weight:600;color:#555;font-size:10px">${String(b.seq).padStart(2,'0')}/${_sal.ch_oficial}</span>` : '';
   if(b.code==='LIVRE'){
     return `<div class="qts-cell c-livre" ${handler} ${titulo}>
       <div class="qts-cc">LIVRE</div></div>`;
@@ -4290,6 +4320,7 @@ function limparBloco(dia, slot){
   let b=qts.blocos.find(x=>x.dia===dia && x.slot===slot);
   if(!b){ b={dia,slot}; qts.blocos.push(b); }
   b.code="LIVRE"; b.disc="Bloco livre"; b.instr="—"; b.local="—"; b.uniforme="—"; b.discRef=null; b.avalTipo=null; b.obs="";
+  delete b.seq;  // bloco esvaziado nao tem numero sequencial
   if(qts.aprovado){ qts.aprovado=false; qts.aprovadoPor=""; qts.aprovadoEm=""; }
   _persisteQTS(); render();
 }
@@ -4297,7 +4328,7 @@ function limparSemanaQTS(){
   if(!["direcao","coordenacao"].includes(role)){ toast("Apenas Direção/Coordenação edita o QTS.","warn"); return; }
   if(!confirm(`Limpar TODOS os lançamentos do QTS da Semana ${curWeek}?\n\nOs tempos voltam a ficar livres e as atividades de campo do dia são removidas. Esta semana fica pronta para montagem do zero.`)) return;
   const qts=getQTS(curWeek);
-  qts.blocos.forEach(b=>{ b.code="LIVRE"; b.disc="Bloco livre"; b.instr="—"; b.local="—"; b.uniforme="—"; });
+  qts.blocos.forEach(b=>{ b.code="LIVRE"; b.disc="Bloco livre"; b.instr="—"; b.local="—"; b.uniforme="—"; delete b.seq; });
   qts.campo={};
   qts.aprovado=false; qts.aprovadoPor=""; qts.aprovadoEm="";
   toast(`QTS da Semana ${curWeek} limpo.`,"ok"); render();
@@ -4399,10 +4430,16 @@ function salvarBlocoMultiplo(){
   const slots = [...document.querySelectorAll('.eb-slot:checked')].map(e=>parseInt(e.value,10));
   if(!dias.length || !slots.length){ toast('Selecione ao menos um dia e um tempo.','warn'); return; }
   const qts = getQTS(curWeek); let n=0;
+  // ordem cronologica (dia, depois tempo) p/ a numeracao sequencial sair na sequencia certa
+  dias.sort((x,y)=>x-y); slots.sort((x,y)=>_slotRank(x)-_slotRank(y));
   for(const d of dias) for(const s of slots){
     let b = qts.blocos.find(x=>x.dia===d && x.slot===s);
     if(!b){ b={dia:d, slot:s}; qts.blocos.push(b); }
+    const oldCode = b.code;
     b.code=code; b.disc=a.nome; b.instr=instr; b.local=local; b.uniforme=uniforme; b.discRef=_av.discRef; b.avalTipo=_av.avalTipo; b.obs=obs; n++;
+    // numero sequencial IMUTAVEL: atribui ao criar/trocar disciplina; remove se a atividade nao numera
+    if(_temSeq(code)){ if(_bucketSeq(oldCode)!==_bucketSeq(code) || typeof b.seq!=='number') b.seq=_proximoSeq(code, b); }
+    else delete b.seq;
   }
   if(qts.aprovado){ qts.aprovado=false; qts.aprovadoPor=""; qts.aprovadoEm=""; }
   _persisteQTS();
@@ -4544,12 +4581,16 @@ function saveBloco(){
   const qts = getQTS(curWeek);
   const b = qts.blocos.find(x=>x.dia===editTarget.dia && x.slot===editTarget.slot);
   const wasApproved = qts.aprovado;
+  const oldCode = b.code;
   b.code = code; b.disc = a.nome;
   b.instr = document.getElementById('eb-instr').value.trim() || a.instr;
   b.local = document.getElementById('eb-local').value || a.local;
   b.uniforme = document.getElementById('eb-uniforme').value || a.uniforme;
   const _av = _lerCamposAval(code); b.discRef = _av.discRef; b.avalTipo = _av.avalTipo;
   b.obs = document.getElementById('eb-obs').value.trim();
+  // numero sequencial IMUTAVEL: atribui ao criar/trocar disciplina; remove se a atividade nao numera
+  if(_temSeq(code)){ if(_bucketSeq(oldCode)!==_bucketSeq(code) || typeof b.seq!=='number') b.seq=_proximoSeq(code, b); }
+  else delete b.seq;
   if(wasApproved){
     qts.aprovado=false; qts.aprovadoPor=""; qts.aprovadoEm="";
     toast('QTS reaberto — bloco alterado. Aprove novamente para validar.', 'warn');
