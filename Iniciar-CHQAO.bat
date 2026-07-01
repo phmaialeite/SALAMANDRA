@@ -22,6 +22,24 @@ if errorlevel 1 (
   exit /b 1
 )
 
+REM Aviso: versoes muito novas do Node (23, 24, 25...) podem NAO abrir a base.
+for /f "delims=" %%v in ('node -p "process.versions.node.split('.')[0]" 2^>nul') do set "NMAJ=%%v"
+set "OKV="
+if "%NMAJ%"=="18" set "OKV=1"
+if "%NMAJ%"=="20" set "OKV=1"
+if "%NMAJ%"=="22" set "OKV=1"
+if not defined OKV (
+  echo ================================================================
+  echo  AVISO: seu Node.js e a versao %NMAJ%, ainda nao testada.
+  echo  Versoes muito novas ^(ex.: 23, 24, 25^) podem NAO abrir a base
+  echo  e derrubar o SALAMANDRA logo no inicio ^(erro "Aborted"^).
+  echo  RECOMENDADO: instale o Node.js 22 LTS em https://nodejs.org
+  echo  ^(clique no botao LTS, nao no "Current"^).
+  echo  Pode continuar assim mesmo por sua conta e risco.
+  echo ================================================================
+  pause
+)
+
 if not exist "%PGLITE_DIR%" (
   echo Primeira execucao nesta maquina: preparando a base de dados ^(uma unica vez^)...
   echo Banco local em: %PGLITE_DIR%
