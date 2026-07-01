@@ -1,0 +1,127 @@
+==================================================================
+  SALAMANDRA - CAMINHO A: UM SERVIDOR NA REDE DO QUARTEL
+  (todos veem os mesmos dados, em tempo real)   Build 30/06/2026
+==================================================================
+
+A IDEIA
+-------
+UMA maquina roda o SALAMANDRA (o "servidor"). Todas as outras NAO
+instalam nada: so abrem o navegador no endereco do servidor. Existe
+UM banco de dados so, na maquina servidor. Tudo que uns lancam, os
+outros veem.
+
+--------------------------------------------------------------
+PARTE 1 - NA MAQUINA QUE SERA O SERVIDOR (faca uma vez)
+--------------------------------------------------------------
+Escolha um computador que:
+  - fique LIGADO durante o expediente;
+  - esteja na MESMA rede (cabo ou wi-fi) dos demais;
+  - de preferencia, com IP fixo (peca ao TI).
+
+Passos:
+1) Copie a pasta SALAMANDRA-WINDOWS para a Area de Trabalho DESTE PC.
+2) Clique com o botao direito em "Liberar-Firewall-8088.bat" e
+   escolha "Executar como administrador". (Faz uma vez so.)
+3) De dois cliques em "Servidor-CHQAO.bat".
+   - A janela preta vai mostrar o ENDERECO, algo como:
+            http://192.168.0.10:8088
+     ANOTE esse endereco - e o que a turma vai usar.
+   - NAO feche essa janela enquanto o sistema estiver em uso.
+
+--------------------------------------------------------------
+ATUALIZACOES (maquina servidor 24h)
+--------------------------------------------------------------
+- Para APLICAR uma atualizacao: feche a janela do servidor e de
+  dois cliques em "Atualizar-Servidor.bat". Ele copia a versao
+  mais nova da pasta do GOOGLE DRIVE (privada), atualiza e ja sobe
+  o servidor de novo. O BANCO DE DADOS nao e alterado.
+  IMPORTANTE: a maquina servidor precisa ter o Google Drive
+  instalado e sincronizado (com a pasta SALAMANDRA-WINDOWS). Se o
+  Drive estiver noutra letra/lugar, crie um arquivo
+  "origem-atualizacao.txt" nesta pasta com o caminho, por exemplo:
+     G:\Meu Drive\SALAMANDRA-WINDOWS
+- Assim que o servidor e atualizado, TODOS os outros PCs pegam a
+  versao nova sozinhos (basta recarregar a pagina no navegador).
+  Nao e preciso mexer em cada computador.
+- No dia a dia, se nada mudou, pode subir com "Servidor-CHQAO.bat".
+- Se a maquina estiver sem internet na hora, o Atualizar-Servidor
+  avisa e sobe com a versao que ja esta na maquina (nao trava).
+- OBS.: mudancas raras nos proprios lancadores (.bat) nao entram
+  pelo Atualizar-Servidor; nesse caso eu aviso para recopiar a
+  pasta inteira.
+
+--------------------------------------------------------------
+AUTOMACAO 24h (opcional, recomendada para a maquina servidor)
+--------------------------------------------------------------
+Deixa o servidor "esquecido ligado": sobe sozinho ao ligar a
+maquina e se atualiza de madrugada, sem ninguem tocar.
+
+Passo 1 - Instalar a automacao:
+  Botao direito em "Instalar-Automacao.bat" > "Executar como
+  administrador". Ele cria duas tarefas:
+   - AUTO-INICIO: sobe o servidor quando a maquina liga/loga;
+   - ATUALIZAR 04:00: todo dia de madrugada atualiza e reinicia.
+  Para remover depois: "Desinstalar-Automacao.bat" (como admin).
+
+Passo 2 - LOGIN AUTOMATICO do Windows (faz 1 vez, MANUAL):
+  Sem isto, apos falta de energia a maquina liga mas fica na tela
+  de senha, e o servidor NAO sobe. Para entrar sozinha:
+   1) Tecla Windows + R, digite:  netplwiz   e Enter.
+   2) Selecione a conta (a mesma que fica logada no quartel).
+   3) DESMARQUE "Os usuarios precisam digitar um nome de usuario
+      e senha para usar este computador".
+   4) Aplicar > digite a senha duas vezes > OK.
+  (Se a opcao nao aparecer: Configuracoes > Contas > Opcoes de
+   entrada > desligue "Exigir Windows Hello"; depois refaca.)
+  Dica: nas opcoes de energia, deixe "Nunca" para suspender.
+
+Depois disso: acabou a luz e voltou -> a maquina liga, entra
+sozinha, o servidor sobe e a turma volta a acessar. Sem ninguem
+no local.
+
+OBS.: e uma maquina DEDICADA ao servidor. A atualizacao de 04:00
+encerra o processo "node" para reiniciar; nao use essa maquina
+para rodar outros programas em node ao mesmo tempo.
+
+--------------------------------------------------------------
+PARTE 2 - NOS OUTROS COMPUTADORES (nada a instalar)
+--------------------------------------------------------------
+1) Abra o navegador (Chrome/Edge).
+2) Digite o endereco que apareceu no servidor, por exemplo:
+            http://192.168.0.10:8088
+3) Faca login normalmente. Pronto - todos no mesmo sistema.
+Dica: salve o endereco nos Favoritos de cada PC.
+
+--------------------------------------------------------------
+BACKUP (importante)
+--------------------------------------------------------------
+- A cada vez que o "Servidor-CHQAO.bat" e iniciado, ele ja guarda
+  automaticamente uma copia da base (as 5 ultimas).
+- Para uma copia sob demanda: feche o servidor e rode
+  "Backup-Agora-SALAMANDRA.bat" (gera copia datada em
+  Documentos\SALAMANDRA-backups). Leve uma copia em pen drive.
+- Se a base corromper: "Restaurar-base-SALAMANDRA.bat".
+
+--------------------------------------------------------------
+PERGUNTAS COMUNS
+--------------------------------------------------------------
+- "Outro PC nao abre o endereco": rode o Liberar-Firewall-8088.bat
+  no servidor (como administrador) e confirme que os dois estao na
+  MESMA rede. Teste no proprio servidor: http://127.0.0.1:8088
+- "O endereco mudou sozinho": o IP nao esta fixo. Peca ao TI para
+  reservar um IP fixo para a maquina servidor.
+- "De casa nao acessa": correto. O Caminho A funciona so dentro da
+  rede do quartel. Acesso pela internet e outro passo (Caminho B),
+  que depende de autorizacao de comando.
+- Quantos usam ao mesmo tempo? Para uma turma, o banco embutido da
+  conta. Se um dia crescer muito, migra-se para PostgreSQL - o
+  sistema ja esta preparado (basta definir DATABASE_URL).
+
+--------------------------------------------------------------
+REGRAS DE OURO
+--------------------------------------------------------------
+1) SO UMA maquina roda o servidor. As outras usam o navegador.
+2) NUNCA rode o servidor a partir do Google Drive nem de pen drive:
+   copie para a Area de Trabalho.
+3) O banco fica SO no servidor. Nao copie a base entre maquinas.
+==================================================================
