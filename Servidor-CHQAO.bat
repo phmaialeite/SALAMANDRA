@@ -55,9 +55,9 @@ echo   "Liberar-Firewall-8088.bat" da pasta SALAMANDRA-WINDOWS.
 echo   NAO feche esta janela enquanto estiver em uso.
 echo ================================================================
 
-start "" /min powershell -NoProfile -Command "$u='http://127.0.0.1:8088'; for($i=0;$i -lt 60;$i++){ try{ [void](Invoke-WebRequest $u -UseBasicParsing -TimeoutSec 2); Start-Process $u; break }catch{ Start-Sleep -Milliseconds 800 } }"
+if not defined SAL_NOBROWSER start "" /min powershell -NoProfile -Command "$u='http://127.0.0.1:8088'; for($i=0;$i -lt 60;$i++){ try{ [void](Invoke-WebRequest $u -UseBasicParsing -TimeoutSec 2); Start-Process $u; break }catch{ Start-Sleep -Milliseconds 800 } }"
 set "COOKIE_SECURE="
 node --no-warnings src\server.js
 echo.
 echo O SERVIDOR foi encerrado, ou houve um erro acima.
-pause
+if not defined SAL_NOBROWSER pause
