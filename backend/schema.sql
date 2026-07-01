@@ -21,6 +21,8 @@ CREATE TABLE IF NOT EXISTS usuarios (
 -- data de nascimento (faixa etária do TAF) e sexo (tabela masc/fem do TAF)
 ALTER TABLE usuarios ADD COLUMN IF NOT EXISTS nascimento TEXT;
 ALTER TABLE usuarios ADD COLUMN IF NOT EXISTS sexo TEXT;
+-- login de acesso (normalizado: 1º nome sem acentos; Direção pode ter login próprio). Único.
+ALTER TABLE usuarios ADD COLUMN IF NOT EXISTS login TEXT;
 
 CREATE TABLE IF NOT EXISTS perfis (
   usuario_id TEXT NOT NULL,

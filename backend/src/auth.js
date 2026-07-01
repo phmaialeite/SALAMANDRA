@@ -16,6 +16,14 @@ export function verificaSenha(senha, armazenado) {
   return dk.length === exp.length && timingSafeEqual(dk, exp);
 }
 
+// Normaliza um login/usuário: minúsculas, sem acentos, espaços colapsados.
+// Usado tanto no cadastro (grava normalizado) quanto no login (compara normalizado),
+// para que "Sérgio", "sergio" e " SERGIO " caiam no mesmo usuário.
+export function normLogin(s) {
+  return String(s || "").normalize("NFD").replace(/[̀-ͯ]/g, "")
+    .trim().toLowerCase().replace(/\s+/g, " ");
+}
+
 // Senha inicial: senha_inicial customizada -> RE válido -> "1234"
 export function senhaInicial(u) {
   if (u.senha_inicial && String(u.senha_inicial).trim()) return String(u.senha_inicial).trim();

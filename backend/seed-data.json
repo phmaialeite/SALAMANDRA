@@ -15,13 +15,12 @@
    "id": "u-002",
    "postoGrad": "Ten Cel BM",
    "nome": "Sérgio Felipe Furukawa",
-   "re": "—",
+   "re": "0821-0",
    "perfis": [
     "direcao"
    ],
    "cargo": "Diretor Adjunto",
-   "obs": "Membro da Comissão de Provas e Exames do PSI CHQAOBM VIII.",
-   "senhaInicial": "0000"
+   "obs": "Membro da Comissão de Provas e Exames do PSI CHQAOBM VIII."
   },
   {
    "id": "u-003",
@@ -38,13 +37,12 @@
    "id": "u-004",
    "postoGrad": "Maj BM",
    "nome": "Pedro Daniel Simões Barbati",
-   "re": "—",
+   "re": "0234-5",
    "perfis": [
     "coordenacao"
    ],
    "cargo": "Coordenador Adjunto",
-   "obs": "Membro da Comissão de Provas e Exames do PSI CHQAOBM VIII.",
-   "senhaInicial": "0000"
+   "obs": "Membro da Comissão de Provas e Exames do PSI CHQAOBM VIII."
   },
   {
    "id": "u-005",
@@ -61,7 +59,7 @@
    "id": "u-006",
    "postoGrad": "SD BM",
    "nome": "Jonatas Fernandes",
-   "re": "—",
+   "re": "0927-6",
    "perfis": [
     "auxiliar"
    ],
@@ -136,6 +134,33 @@
    "nm": "Antônio Edson Oliveira",
    "re": "0726-6",
    "prec": 8
+  },
+  {
+   "id": "a9",
+   "postoGrad": "Subten BM",
+   "nm": "Roberto Elias da Silva",
+   "re": "0285-2",
+   "prec": 9,
+   "ouvinte": true,
+   "obs": "Aluno Ouvinte — Portaria 629/2026 (decisão judicial, sem efeitos financeiros/antiguidade)."
+  },
+  {
+   "id": "a10",
+   "postoGrad": "Subten BM",
+   "nm": "Servanildo Bezerra de Oliveira",
+   "re": "0229-2",
+   "prec": 10,
+   "ouvinte": true,
+   "obs": "Aluno Ouvinte — Portaria 629/2026 (decisão judicial, sem efeitos financeiros/antiguidade)."
+  },
+  {
+   "id": "a11",
+   "postoGrad": "1º Sgt BM",
+   "nm": "Ânderson Éder Oliveira Bitencourt",
+   "re": "0312-9",
+   "prec": 11,
+   "ouvinte": true,
+   "obs": "Aluno Ouvinte — Portaria 644/2026 (decisão judicial, sem efeitos financeiros/antiguidade)."
   }
  ],
  "MATRIZ": [

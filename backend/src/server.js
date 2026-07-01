@@ -10,7 +10,7 @@ import { readFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
 import { getDb, initSchema } from "./db.js";
-import { hashSenha, verificaSenha, senhaInicial } from "./auth.js";
+import { hashSenha, verificaSenha, senhaInicial, normLogin } from "./auth.js";
 
 const PUBLIC_DIR = path.join(path.dirname(fileURLToPath(import.meta.url)), "..", "..", "public");
 
@@ -122,7 +122,9 @@ app.post("/api/login", { config: { public: true } }, async (req, reply) => {
   const { usuario, senha } = req.body || {};
   if (!usuario || !senha) return reply.code(400).send({ erro: "informe usuário e senha" });
   const db = await getDb();
-  const u = (await db.query(`SELECT * FROM usuarios WHERE (re=$1 OR id=$1) AND ativo=TRUE LIMIT 1`, [String(usuario).trim()])).rows[0];
+  const raw = String(usuario).trim();
+  // Login por 1º nome (normalizado: sem acento/caixa) — ou, por conveniência, RE ou id.
+  const u = (await db.query(`SELECT * FROM usuarios WHERE (login=$1 OR re=$2 OR id=$2) AND ativo=TRUE LIMIT 1`, [normLogin(raw), raw])).rows[0];
   if (!u || !verificaSenha(senha, u.senha_hash)) { await audit(db, (u && u.id) || null, "login_falha", "usuario", String(usuario)); return reply.code(401).send({ erro: "usuário ou senha inválidos" }); }
   setSessao(reply, u.id); await audit(db, u.id, "login");
   return await carregaUsuario(db, u.id);
@@ -144,8 +146,8 @@ async function montarEstado(db) {
   const us = (await db.query("SELECT * FROM usuarios ORDER BY tipo, precedencia NULLS LAST, id")).rows;
   const pf = (await db.query("SELECT * FROM perfis")).rows;
   const perfDe = (id) => pf.filter((x) => x.usuario_id === id).map((x) => x.perfil);
-  const EQUIPE = us.filter((u) => u.tipo === "equipe").map((u) => ({ id: u.id, postoGrad: u.posto_grad, nome: u.nome, re: u.re, perfis: perfDe(u.id), cargo: u.cargo || "", obs: u.obs || "", nascimento: u.nascimento || "", sexo: u.sexo || "", ...(u.senha_inicial ? { senhaInicial: u.senha_inicial } : {}) }));
-  const ALUNOS = us.filter((u) => u.tipo === "aluno").map((u) => ({ id: u.id, postoGrad: u.posto_grad, nm: u.nome, re: u.re, prec: u.precedencia, nascimento: u.nascimento || "", sexo: u.sexo || "" }));
+  const EQUIPE = us.filter((u) => u.tipo === "equipe").map((u) => ({ id: u.id, login: u.login || "", postoGrad: u.posto_grad, nome: u.nome, re: u.re, perfis: perfDe(u.id), cargo: u.cargo || "", obs: u.obs || "", nascimento: u.nascimento || "", sexo: u.sexo || "", ...(u.senha_inicial ? { senhaInicial: u.senha_inicial } : {}) }));
+  const ALUNOS = us.filter((u) => u.tipo === "aluno").map((u) => ({ id: u.id, login: u.login || "", postoGrad: u.posto_grad, nm: u.nome, re: u.re, prec: u.precedencia, obs: u.obs || "", nascimento: u.nascimento || "", sexo: u.sexo || "" }));
   const MATRIZ = (await db.query("SELECT * FROM disciplinas ORDER BY ord")).rows.map((d) => ({ cod: d.cod, ord: d.ord, nucleo: d.nucleo, nome: d.nome, ch: d.ch, peso: d.peso, natureza: d.natureza, instrutor: d.instrutor, instrutorId: d.instrutor_id }));
   const FREQ_LANC = (await db.query("SELECT * FROM lancamentos_freq")).rows.map((r) => ({ id: r.id, data: r.data, disc: r.disc, ha: r.ha, faltas: p(r.faltas) || {}, autor: r.autor, registradoEm: r.registrado_em }));
   const NOTAS_LANC = (await db.query("SELECT * FROM lancamentos_nota")).rows.map((r) => ({ id: r.id, disc: r.disc, avaliacao: r.avaliacao, notas: p(r.notas) || {}, autor: r.autor, registradoEm: r.registrado_em }));

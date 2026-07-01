@@ -2821,7 +2821,7 @@ const ESTADOS = [
 let role = "direcao";
 let view = "painel";
 
-const APP_VERSAO = "v1.0 · build 30/06/2026";
+const APP_VERSAO = "v1.0 · build 01/07/2026";
 const NAV = [
   {grp:"Operação do Curso", items:[
     {id:"painel", nm:"Painel", ic:icoGrid},
@@ -8769,15 +8769,53 @@ function aplicarMe(me){
     const rb=document.querySelector(".role-box"); if(rb) rb.appendChild(b);
   }
 }
-async function entrar(me){
+async function entrar(me, senhaUsada){
+  // Troca OBRIGATÓRIA no 1º acesso: se a senha é provisória, barra a entrada até definir uma nova.
+  if(me && me.senhaProvisoria){ mostrarTrocaObrigatoria(senhaUsada||""); return; }
   aplicarMe(me);
   const S = await API.estado();
   hidratar(S);
   esconderLogin();
   render();
   gerarSalaPNG(); gerarSalaWM();   // prepara o emblema (PNG) e a marca d'água para os PDFs
-  if(me.senhaProvisoria){ setTimeout(()=>{ try{ alert("Sua senha é provisória. Acesse 🔑 Minha conta para defini-la."); }catch{} }, 300); }
 }
+// Tela de definição de senha no 1º acesso (barreira; não deixa usar o sistema antes de trocar).
+function mostrarTrocaObrigatoria(senhaAtual){
+  montarLogin();
+  const ov=document.getElementById("login-ov"); if(ov) ov.style.display="flex";
+  const form=document.getElementById("login-form");
+  const temAtual = !!senhaAtual;   // se veio do login agora, já sabemos a senha atual
+  form.innerHTML =
+    '<div style="font-family:\'Oswald\',sans-serif;font-weight:700;letter-spacing:.20em;font-size:18px;color:#a9182a;text-align:center">DEFINA SUA SENHA</div>'
+    +'<div style="font-size:12px;color:#6a6a72;text-align:center;margin:4px 0 16px">Primeiro acesso — crie uma senha pessoal para continuar.</div>'
+    +(temAtual?'':'<label style="display:block;font-size:11px;font-weight:600;color:#5a5a62;text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px">Senha atual</label>'
+      +'<input id="tp-atual" type="password" autocomplete="current-password" style="width:100%;box-sizing:border-box;padding:10px 12px;border:1px solid #cfcfd4;border-radius:8px;font-size:14px;margin-bottom:12px">')
+    +'<label style="display:block;font-size:11px;font-weight:600;color:#5a5a62;text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px">Nova senha</label>'
+    +'<input id="tp-nova" type="password" autocomplete="new-password" placeholder="mínimo 6 caracteres" style="width:100%;box-sizing:border-box;padding:10px 12px;border:1px solid #cfcfd4;border-radius:8px;font-size:14px;margin-bottom:12px">'
+    +'<label style="display:block;font-size:11px;font-weight:600;color:#5a5a62;text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px">Confirmar nova senha</label>'
+    +'<input id="tp-conf" type="password" autocomplete="new-password" style="width:100%;box-sizing:border-box;padding:10px 12px;border:1px solid #cfcfd4;border-radius:8px;font-size:14px;margin-bottom:6px">'
+    +'<div id="tp-err" style="color:#c0392b;font-size:12px;min-height:16px;margin-bottom:8px"></div>'
+    +'<button type="submit" id="tp-btn" style="width:100%;padding:11px;background:#c0392b;color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer">Salvar e entrar</button>';
+  const novo=form.cloneNode(true); form.parentNode.replaceChild(novo,form);  // remove o handler de login
+  novo.addEventListener("submit", async (ev)=>{
+    ev.preventDefault();
+    const atual = temAtual ? senhaAtual : (document.getElementById("tp-atual").value||"");
+    const nova = document.getElementById("tp-nova").value||"";
+    const conf = document.getElementById("tp-conf").value||"";
+    const err=document.getElementById("tp-err"), btn=document.getElementById("tp-btn"); err.textContent="";
+    if(nova.length<6){ err.textContent="A nova senha deve ter ao menos 6 caracteres."; return; }
+    if(nova!==conf){ err.textContent="A confirmação não confere."; return; }
+    btn.disabled=true; btn.textContent="Salvando…";
+    try{
+      await API.trocarSenha({atual, nova});
+      const me = await API.me();          // agora senhaProvisoria = false
+      montarLoginLimpo();                 // restaura o formulário de login padrão p/ próximos acessos
+      await entrar(me);
+    }catch(e){ err.textContent=(e&&e.message)||"Não foi possível trocar a senha."; btn.disabled=false; btn.textContent="Salvar e entrar"; }
+  });
+}
+// Recria o overlay de login do zero (usado após a troca obrigatória).
+function montarLoginLimpo(){ const ov=document.getElementById("login-ov"); if(ov) ov.remove(); montarLogin(); }
 async function bootOnline(){
   montarLogin();
   try{ const me = await API.me(); await entrar(me); }
@@ -8793,8 +8831,8 @@ function montarLogin(){
     +'<div style="display:flex;justify-content:center;margin-bottom:6px">'+salamandraSVG(64,'emblema')+'</div>'
     +'<div style="font-family:\'Oswald\',sans-serif;font-weight:700;letter-spacing:.24em;font-size:20px;color:#a9182a;text-align:center">SALAMANDRA</div>'
     +'<div style="font-size:12px;color:#6a6a72;text-align:center;margin:2px 0 18px">CHQAO BM 2026 — Turma VIII · Governança do Curso</div>'
-    +'<label style="display:block;font-size:11px;font-weight:600;color:#5a5a62;text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px">RE ou usuário</label>'
-    +'<input id="lg-user" autocomplete="username" style="width:100%;box-sizing:border-box;padding:10px 12px;border:1px solid #cfcfd4;border-radius:8px;font-size:14px;margin-bottom:14px">'
+    +'<label style="display:block;font-size:11px;font-weight:600;color:#5a5a62;text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px">Usuário</label>'
+    +'<input id="lg-user" autocomplete="username" placeholder="seu primeiro nome" style="width:100%;box-sizing:border-box;padding:10px 12px;border:1px solid #cfcfd4;border-radius:8px;font-size:14px;margin-bottom:14px">'
     +'<label style="display:block;font-size:11px;font-weight:600;color:#5a5a62;text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px">Senha</label>'
     +'<input id="lg-pass" type="password" autocomplete="current-password" style="width:100%;box-sizing:border-box;padding:10px 12px;border:1px solid #cfcfd4;border-radius:8px;font-size:14px;margin-bottom:6px">'
     +'<div id="lg-err" style="color:#c0392b;font-size:12px;min-height:16px;margin-bottom:8px"></div>'
@@ -8812,7 +8850,7 @@ async function submeterLogin(ev){
   const err=document.getElementById("lg-err"), btn=document.getElementById("lg-btn");
   err.textContent=""; if(!u||!s){ err.textContent="Informe usuário e senha."; return; }
   btn.disabled=true; btn.textContent="Entrando…";
-  try{ const me=await API.login(u,s); await entrar(me); }
+  try{ const me=await API.login(u,s); await entrar(me, s); }
   catch(e){ err.textContent = (e&&e.message) || "Falha no login."; }
   finally{ btn.disabled=false; btn.textContent="Entrar"; }
 }

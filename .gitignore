@@ -2,6 +2,14 @@
 backend/pgdata/
 pgdata/
 
+# Segredos (hash da senha do Diretor) — NUNCA no GitHub. Vai só p/ Drive/pen drive (privados).
+backend/segredos.json
+
+# Documentos de pessoal (planilha de efetivo, Portarias) — NUNCA versionar/distribuir.
+*.xlsx
+Efetivo*
+Portaria_*
+
 # Dependências: VERSIONADAS de propósito (puro JS + WASM, portáveis) para o
 # Linux/qualquer máquina "clonar e rodar" sem npm install nem internet.
 

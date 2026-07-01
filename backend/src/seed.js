@@ -4,13 +4,34 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { getDb, initSchema } from "./db.js";
-import { hashSenha, senhaInicial } from "./auth.js";
+import { hashSenha, senhaInicial, normLogin } from "./auth.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const J = (p) => JSON.parse(fs.readFileSync(p, "utf8"));
 
 const seed = J(path.join(__dirname, "..", "seed-data.json"));
 const base = J(path.join(__dirname, "..", "..", "seed", "base-limpa.json"));
+
+// ----------------------------------------------------------------------------
+// ACESSO (rede CBMRO): login = 1º nome (normalizado); senha = RE; troca obrigatória
+// no 1º acesso. Diretor tem login e senha próprios (a senha NÃO fica em texto em
+// lugar algum — guarda-se apenas o hash abaixo). Sem RE -> senha provisória = 1º nome.
+// ----------------------------------------------------------------------------
+const DIRETOR_LOGIN = "cel bm maia";
+// Hash da senha do Diretor vem de segredos.json (fora do GitHub). Se não existir
+// (ex.: alguém clonou só do repositório público), o Diretor entra com o RE e troca
+// obrigatoriamente no 1º acesso — nenhuma senha fica em texto/hash no código versionado.
+let _segredos = {};
+try { _segredos = J(path.join(__dirname, "..", "segredos.json")); } catch { _segredos = {}; }
+const temRE = (re) => !!(re && re !== "—" && String(re).trim() !== "");
+const primeiroNome = (nome) => normLogin(nome).split(" ")[0] || normLogin(nome);
+const _logins = new Set();
+function loginUnico(base) {
+  base = normLogin(base) || "usuario";
+  let cand = base, i = 2;
+  while (_logins.has(cand)) cand = base + (i++);
+  _logins.add(cand); return cand;
+}
 
 async function run() {
   const db = await initSchema();
@@ -20,19 +41,29 @@ async function run() {
 
   // Usuários (equipe + alunos) e perfis
   for (const p of seed.EQUIPE) {
-    const ini = senhaInicial({ senha_inicial: p.senhaInicial, re: p.re });
+    let login, senhaHash, provisoria, senhaIniCol;
+    if (p.id === "u-001") {                      // Diretor: login e senha próprios (hash vindo de segredos.json)
+      login = loginUnico(DIRETOR_LOGIN); senhaIniCol = null;
+      if (_segredos.diretorHash) { senhaHash = _segredos.diretorHash; provisoria = false; }
+      else { senhaHash = hashSenha(senhaInicial({ senha_inicial: null, re: p.re })); provisoria = true; }  // sem segredos: RE + troca
+    } else {
+      login = loginUnico(primeiroNome(p.nome));
+      const iniPlano = p.senhaInicial ? String(p.senhaInicial) : (temRE(p.re) ? String(p.re).trim() : primeiroNome(p.nome));
+      senhaHash = hashSenha(iniPlano); provisoria = true;
+      senhaIniCol = temRE(p.re) ? null : iniPlano;   // RE fica implícito; sem RE, expõe a provisória (1º nome) à Direção
+    }
     await db.query(
-      `INSERT INTO usuarios (id,tipo,posto_grad,nome,re,precedencia,cargo,obs,senha_inicial,senha_hash,senha_provisoria,ativo)
-       VALUES ($1,'equipe',$2,$3,$4,NULL,$5,$6,$7,$8,TRUE,TRUE)`,
-      [p.id, p.postoGrad, p.nome, p.re, p.cargo || null, p.obs || null, p.senhaInicial || null, hashSenha(ini)]);
+      `INSERT INTO usuarios (id,tipo,login,posto_grad,nome,re,precedencia,cargo,obs,senha_inicial,senha_hash,senha_provisoria,ativo)
+       VALUES ($1,'equipe',$2,$3,$4,$5,NULL,$6,$7,$8,$9,$10,TRUE)`,
+      [p.id, login, p.postoGrad, p.nome, p.re, p.cargo || null, p.obs || null, senhaIniCol, senhaHash, provisoria]);
     for (const perf of (p.perfis || [])) await db.query(`INSERT INTO perfis (usuario_id,perfil) VALUES ($1,$2)`, [p.id, perf]);
   }
-  for (const a of seed.ALUNOS) {
-    const ini = senhaInicial({ senha_inicial: null, re: a.re });
+  for (const a of seed.ALUNOS) {                 // aluno: login = 1º nome, senha = RE, troca obrigatória
+    const login = loginUnico(primeiroNome(a.nm));
     await db.query(
-      `INSERT INTO usuarios (id,tipo,posto_grad,nome,re,precedencia,senha_hash,senha_provisoria,ativo)
-       VALUES ($1,'aluno',$2,$3,$4,$5,$6,TRUE,TRUE)`,
-      [a.id, a.postoGrad, a.nm, a.re, a.prec, hashSenha(ini)]);
+      `INSERT INTO usuarios (id,tipo,login,posto_grad,nome,re,precedencia,obs,senha_hash,senha_provisoria,ativo)
+       VALUES ($1,'aluno',$2,$3,$4,$5,$6,$7,$8,TRUE,TRUE)`,
+      [a.id, login, a.postoGrad, a.nm, a.re, a.prec, a.obs || null, hashSenha(senhaInicial({ senha_inicial: null, re: a.re }))]);
     await db.query(`INSERT INTO perfis (usuario_id,perfil) VALUES ($1,'aluno')`, [a.id]);
   }
 
@@ -59,7 +90,9 @@ async function run() {
     if (!uid) {
       uid = `u-${String(prox++).padStart(3, "0")}`;
       const { postoGrad, nome } = parsePosto(instr);
-      await db.query(`INSERT INTO usuarios (id,tipo,posto_grad,nome,re,senha_inicial,senha_hash,senha_provisoria,ativo) VALUES ($1,'equipe',$2,$3,NULL,NULL,$4,TRUE,TRUE)`, [uid, postoGrad, nome, hashSenha("1234")]);
+      const login = loginUnico(primeiroNome(nome));
+      const prov = primeiroNome(nome);   // sem RE em cadastro -> senha provisória = 1º nome (troca obrigatória)
+      await db.query(`INSERT INTO usuarios (id,tipo,login,posto_grad,nome,re,senha_inicial,senha_hash,senha_provisoria,ativo) VALUES ($1,'equipe',$2,$3,$4,NULL,$5,$6,TRUE,TRUE)`, [uid, login, postoGrad, nome, prov, hashSenha(prov)]);
       await db.query(`INSERT INTO perfis (usuario_id,perfil) VALUES ($1,'instrutor')`, [uid]);
       criados[instr] = uid;
     }
@@ -70,8 +103,9 @@ async function run() {
   // Educadora Física: Ten BM Ana (monitora de TFM na Portaria 598). Perfil educador_fisico.
   {
     const idEF = `u-${String(prox++).padStart(3, "0")}`;
-    await db.query(`INSERT INTO usuarios (id,tipo,posto_grad,nome,re,cargo,senha_inicial,senha_hash,senha_provisoria,ativo) VALUES ($1,'equipe',$2,$3,NULL,$4,NULL,$5,TRUE,TRUE)`,
-      [idEF, "Ten BM", "Ana", "Educadora Física / Monitora de TFM", hashSenha("1234")]);
+    const loginEF = loginUnico("ana");
+    await db.query(`INSERT INTO usuarios (id,tipo,login,posto_grad,nome,re,cargo,senha_inicial,senha_hash,senha_provisoria,ativo) VALUES ($1,'equipe',$2,$3,$4,NULL,$5,$6,$7,TRUE,TRUE)`,
+      [idEF, loginEF, "Ten BM", "Ana", "Educadora Física / Monitora de TFM", "ana", hashSenha("ana")]);
     await db.query(`INSERT INTO perfis (usuario_id,perfil) VALUES ($1,'educador_fisico')`, [idEF]);
     console.log("Educadora Física (Ten BM Ana):", idEF);
   }
@@ -96,15 +130,13 @@ async function run() {
     console.log("QTS semeado: semanas", Object.keys(qts).join(", "));
   }
 
-  // Acesso padrão da fase de TESTE: senha "1234" para todos (sem troca obrigatória)
-  // e conta-mestre de entrada rápida (login "0000" / senha "1234", perfil Direção).
-  // Cada pessoa também entra com o próprio RE + 1234. (Endurecer antes do uso real/nuvem.)
-  await db.query(`UPDATE usuarios SET senha_hash=$1, senha_provisoria=FALSE`, [hashSenha("1234")]);
-  if (!(await db.query(`SELECT 1 FROM usuarios WHERE re='0000' OR id='acesso-0000'`)).rows[0]) {
-    await db.query(`INSERT INTO usuarios (id,tipo,posto_grad,nome,re,senha_hash,senha_provisoria,ativo) VALUES ('acesso-0000','equipe','','Acesso de Teste','0000',$1,FALSE,TRUE)`, [hashSenha("1234")]);
-    await db.query(`INSERT INTO perfis (usuario_id,perfil) VALUES ('acesso-0000','direcao')`);
-  }
-  console.log("Acesso de teste: senha 1234 para todos + conta-mestre 0000/1234.");
+  // ACESSO REAL (rede CBMRO): sem senha "1234" geral e sem conta-mestre "0000".
+  // Cada um entra com login = 1º nome e senha = RE (troca obrigatória no 1º acesso);
+  // quem não tem RE cadastrado entra com a senha provisória = 1º nome (também troca).
+  // O Diretor entra com o login/senha próprios definidos acima.
+  await db.query(`DELETE FROM perfis WHERE usuario_id='acesso-0000'`);
+  await db.query(`DELETE FROM usuarios WHERE id='acesso-0000' OR re='0000'`);
+  console.log("Acesso real: login=1º nome, senha=RE (troca obrigatória). Conta de teste 0000 REMOVIDA.");
 
   const c = async (t) => (await db.query(`SELECT COUNT(*)::int AS n FROM ${t}`)).rows[0].n;
   console.log("Seed concluído:",

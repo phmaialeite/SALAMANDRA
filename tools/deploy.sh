@@ -10,6 +10,7 @@ if [ -d "$DRIVE" ]; then
     --exclude '.git' --exclude '.gitignore' --exclude '.claude' \
     --exclude 'tools' --exclude 'Salvar-tudo.command' \
     --exclude '_backups' --exclude 'pgdata' --exclude 'backend/pgdata' \
+    --exclude '*.xlsx' --exclude 'Portaria_*' --exclude 'Efetivo*' \
     --exclude '.DS_Store' --exclude '.tmp.drive*' \
     "$REPO"/ "$DRIVE"/ && echo "[deploy] Drive (sala) atualizado." || echo "[deploy] AVISO: falha ao espelhar no Drive."
 else
